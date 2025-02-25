@@ -12,11 +12,12 @@
   "devDependencies": {
     "browserslist": "^4.24.4",
     "lightningcss": "^1.29.1",
-    "vite": "^6.1.1"
+    "vite": "^6.2.0"
   },
   "dependencies": {
+    "font-picker": "^3.5.1",
+    "noicss.reducedmotion": "^1.0.2",
     "noicss.reset": "^1.8.1",
-    "noicss.toggle": "^1.0.2",
-    "noicss.reducedmotion": "^1.0.2"
+    "noicss.toggle": "^1.0.2"
   }
 }
