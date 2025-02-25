@@ -12,11 +12,6 @@ const fontPicker = new FontPicker("AIzaSyBc8NDnGvm0qzqTV85De1AWiQlFkOUbhRw", "Op
 //--------
 // EVENTS
 
-// advanced tab
-document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
-  document.querySelector(".advancedCont").classList.toggle("open");
-});
-
 // custom form submit
 form.addEventListener("submit", (ev) => formSubmit(ev));
 
@@ -24,6 +19,11 @@ form.addEventListener("submit", (ev) => formSubmit(ev));
 for (const el of form.querySelectorAll("input")) {
   el.addEventListener("change", (ev) => formSubmit(ev));
 }
+
+// advanced tab
+document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
+  document.querySelector(".advancedCont").classList.toggle("open");
+});
 
 //-----------
 // FUNCTIONS
