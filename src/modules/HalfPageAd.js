@@ -4,7 +4,7 @@ const HalfPageAd = {
 
     switch (mode) {
       case "output":
-        imgSrc = formData?.imgUpload.name.length > 0 ? formData.imgUpload.name : "image.jpg";
+        imgSrc = formData?.imgUpload.name.length > 0 ? `./${formData.imgUpload.name}` : "./image.jpg";
         break;
 
       case "preview":
@@ -20,6 +20,9 @@ const HalfPageAd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=${formData.font.family.replaceAll(" ", "+")}:wght@400..700&display=swap" rel="stylesheet">
     <title>interstitial</title>
     <style>
       @property --accentColor {
@@ -201,7 +204,7 @@ const HalfPageAd = {
     </style>
     <style>
       :root {
-        --fontFamily: Lato, Avenir, "Helvetica Neue", Arial, sans-serif;
+        --fontFamily: "${formData?.font.family}", ${formData.font?.category ? formData?.font.category : "sans-serif"};
         --accentColor: ${formData?.accentColor};
         --fontColor: ${formData?.textColor};
         --bgColor: ${formData?.bgColor};
@@ -264,7 +267,7 @@ const HalfPageAd = {
         & .btn {
           padding: 0.5em 1em;
           color: ${formData?.ctaTextColor ? "var(--bgColor)" : "var(--textColor)"};
-          font-weight: 900;
+          font-weight: 700;
           font-size: clamp(1.1rem, 4vmin, 1.6rem);
           letter-spacing: 0.5px;
           line-height: 1;

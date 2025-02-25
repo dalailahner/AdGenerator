@@ -1,3 +1,4 @@
+import FontPicker from "font-picker";
 import HalfPageAd from "./modules/HalfPageAd";
 
 //---------
@@ -6,6 +7,7 @@ const form = document.querySelector("form");
 
 //-------
 // SETUP
+const fontPicker = new FontPicker("AIzaSyBc8NDnGvm0qzqTV85De1AWiQlFkOUbhRw", "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
 
 //--------
 // EVENTS
@@ -27,12 +29,15 @@ for (const el of form.querySelectorAll("input")) {
 // FUNCTIONS
 
 function formSubmit(event) {
-  event.preventDefault();
+  if (event) {
+    event?.preventDefault();
+  }
   const formDataRaw = new FormData(form);
   const formData = Object.fromEntries(formDataRaw.entries());
+  formData.font = fontPicker.getActiveFont();
 
-  // colorPickerRefImg upload
   if (formData.refImgUpload) {
+    // colorPickerRefImg upload
     const colorPickerRefImg = document.querySelector(".colorPickerRefImg");
     if (colorPickerRefImg && formData.refImgUpload.size > 0) {
       colorPickerRefImg.src = URL.createObjectURL(formData.refImgUpload);
