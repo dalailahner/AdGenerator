@@ -4,11 +4,11 @@ const HalfPageAd = {
 
     switch (mode) {
       case "output":
-        imgSrc = formData?.imgUpload.name.length > 0 ? `./${formData.imgUpload.name}` : "./image.jpg";
+        imgSrc = "./bgImg.jpg";
         break;
 
       case "preview":
-        imgSrc = formData?.imgUpload.size > 0 ? URL.createObjectURL(formData.imgUpload) : "";
+        imgSrc = formData.get("hpaImg") ? formData.get("hpaImg") : "";
         break;
 
       default:
@@ -22,7 +22,7 @@ const HalfPageAd = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=${formData.font.family.replaceAll(" ", "+")}:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=${formData.get("font").family.replaceAll(" ", "+")}:wght@400;700&display=swap" rel="stylesheet">
     <title>interstitial</title>
     <style>
       @property --accentColor {
@@ -204,10 +204,10 @@ const HalfPageAd = {
     </style>
     <style>
       :root {
-        --fontFamily: "${formData?.font.family}", ${formData.font?.category ? formData?.font.category : "sans-serif"};
-        --accentColor: ${formData?.accentColor};
-        --fontColor: ${formData?.textColor};
-        --bgColor: ${formData?.bgColor};
+        --fontFamily: "${formData.get("font")?.family}", ${formData.get("font")?.category ? formData.get("font").category : "sans-serif"};
+        --accentColor: ${formData.get("accentColor")};
+        --fontColor: ${formData.get("textColor")};
+        --bgColor: ${formData.get("bgColor")};
       }
       body {
         width: 100%;
@@ -266,7 +266,7 @@ const HalfPageAd = {
         }
         & .btn {
           padding: 0.5em 1em;
-          color: ${formData?.ctaTextColor ? "var(--bgColor)" : "var(--textColor)"};
+          color: ${formData.get("ctaTextColor") ? "var(--bgColor)" : "var(--textColor)"};
           font-weight: 700;
           font-size: clamp(1.1rem, 4vmin, 1.6rem);
           letter-spacing: 0.5px;
@@ -349,9 +349,9 @@ const HalfPageAd = {
         <img class="image" src="${imgSrc}" alt="" />
       </div>
       <div class="textCont">
-        <h1 class="headline">${formData?.headline.length > 0 ? formData.headline : "Headline"}</h1>
-        <p class="subline">${formData?.subline.length > 0 ? formData.subline : "Subline"}</p>
-        <a class="btn" href="#" target="_blank">${formData?.ctaText.length > 0 ? formData.ctaText : "mehr Infos"}</a>
+        <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
+        <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : "Subline"}</p>
+        <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
       </div>
     </div>
   </body>

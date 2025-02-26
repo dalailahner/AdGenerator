@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "font-picker": "^3.5.1",
+    "jimp": "^1.6.0",
     "noicss.reducedmotion": "^1.0.2",
     "noicss.reset": "^1.8.1",
     "noicss.toggle": "^1.0.2"
