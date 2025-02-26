@@ -10,14 +10,23 @@ ctx.addEventListener("message", async (e) => {
 
   const image = await Jimp.fromBuffer(imageArrayBuffer);
 
-  if (options?.width && options?.height) {
-    image.scaleToFit({ w: options.width, h: options.height });
-  }
+  switch (name) {
+    case "adImgUpload":
+      if (options?.width && options?.height) {
+        image.cover({ w: options.width, h: options.height });
+      }
+      ctx.postMessage({ name: name, base64: await image.getBase64("image/jpeg", { quality: 80 }) });
+      break;
 
-  // Return the result
-  if (options?.type === "png") {
-    ctx.postMessage({ name: name, base64: await image.getBase64("image/png") });
-  } else {
-    ctx.postMessage({ name: name, base64: await image.getBase64("image/jpeg", { quality: 80 }) });
+    case "logoUpload":
+      if (options?.width && options?.height) {
+        image.contain({ w: options.width, h: options.height });
+      }
+      ctx.postMessage({ name: name, base64: await image.getBase64("image/png") });
+      break;
+
+    default:
+      console.warn(`WORKER: image name "${name}" not known`);
+      break;
   }
 });

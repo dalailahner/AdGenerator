@@ -76,7 +76,6 @@ function formSubmit(event) {
       options: {
         width: 600,
         height: 600,
-        type: "jpg",
       },
     });
   }
@@ -90,7 +89,6 @@ function formSubmit(event) {
       options: {
         width: 300,
         height: 100,
-        type: "png",
       },
     });
   }

@@ -1,14 +1,18 @@
 const HalfPageAd = {
   getCode(formData, mode = "output") {
-    let imgSrc;
+    let imgSrc = "";
+    let logoSrc = "";
+    const logoAvailable = formData.get("logo")?.length > 0;
 
     switch (mode) {
       case "output":
         imgSrc = "./bgImg.jpg";
+        logoSrc = logoAvailable ? "./logo.jpg" : "";
         break;
 
       case "preview":
         imgSrc = formData.get("hpaImg") ? formData.get("hpaImg") : "";
+        logoSrc = logoAvailable ? formData.get("logo") : "";
         break;
 
       default:
@@ -214,21 +218,18 @@ const HalfPageAd = {
         background-color: var(--bgColor);
       }
       .mainCont {
+        padding-bottom: 1rem;
         width: 100%;
         height: 100svh;
         display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 2rem 1fr 2rem;
-        grid-template-areas:
-          "img img img"
-          ". text .";
+        grid-template-rows: ${logoAvailable ? "3fr 2fr 1fr" : "1fr 1fr"};
         place-items: center;
+        row-gap: 1rem;
         overflow: hidden;
       }
       .imageCont {
         width: 100%;
         height: 100%;
-        grid-area: img;
         overflow: hidden;
         & .image {
           width: 100%;
@@ -237,9 +238,9 @@ const HalfPageAd = {
         }
       }
       .textCont {
+        padding: 0 2rem;
         width: 100%;
         height: 100%;
-        grid-area: text;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -251,8 +252,9 @@ const HalfPageAd = {
         & .headline {
           color: inherit;
           font-family: inherit;
-          font-weight: 700;
           font-size: clamp(1.5rem, 8vmin, 3rem);
+          font-weight: 700;
+          line-height: 1.333;
           transform-origin: 0% 50%;
           animation: textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 0.25s 1 normal both;
         }
@@ -283,6 +285,17 @@ const HalfPageAd = {
             color: var(--accentColor);
             background-color: var(--bgColor);
           }
+        }
+      }
+      .logoCont {
+        padding: 0 2rem;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        & .logo {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
       }
       @keyframes textFadeIn {
@@ -349,9 +362,12 @@ const HalfPageAd = {
         <img class="image" src="${imgSrc}" alt="" />
       </div>
       <div class="textCont">
-        <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
-        <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : "Subline"}</p>
-        <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
+      <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
+      <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : "Subline"}</p>
+      <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
+      </div>
+      <div class="logoCont" ${logoAvailable ? "" : 'style="display: none"'}>
+        <img class="logo" src="${logoSrc}" alt="" />
       </div>
     </div>
   </body>
