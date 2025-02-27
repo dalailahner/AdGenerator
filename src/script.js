@@ -10,7 +10,7 @@ const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", fals
 //-------
 // SETUP
 const fontPicker = new FontPicker("AIzaSyBc8NDnGvm0qzqTV85De1AWiQlFkOUbhRw", "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
-const imgWorker = new Worker(new URL("./modules/imgWorker.js", import.meta.url), {
+const imgWorker = new Worker(new URL("modules/imgWorker.js", import.meta.url), {
   type: "module",
 });
 
@@ -62,6 +62,7 @@ function formSubmit(event) {
     event?.preventDefault();
   }
   const formDataRaw = new FormData(form);
+  formData.clear();
   for (const entry of formDataRaw.entries()) {
     formData.set(entry[0], entry[1]);
   }
