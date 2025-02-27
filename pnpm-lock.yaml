@@ -18,8 +18,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       noicss.reset:
-        specifier: ^1.8.2
-        version: 1.8.2
+        specifier: ^1.9.0
+        version: 1.9.0
       noicss.toggle:
         specifier: ^1.0.2
         version: 1.0.2
@@ -573,8 +573,8 @@ packages:
   noicss.reducedmotion@1.0.2:
     resolution: {integrity: sha512-ak3ZDOqDWVZe/aX5FKXsjZ92VnEVxmsCZ+yIONgVh+Y40Pxh86kww8//hrXG9A8HC0IoW3wN67XGdmipcXUC4Q==}
 
-  noicss.reset@1.8.2:
-    resolution: {integrity: sha512-YqNlBXi8ShdoER0qxaLM6vfgc2ZjqynRvp5wJ4akliHMoC+0szmoOW8C25IqddLvV0Xi8FVsqnAKvg08LGx0qQ==}
+  noicss.reset@1.9.0:
+    resolution: {integrity: sha512-+m/BO/9loFSBtlfZn4sxjR3yOe84o4OymmLV1jDdHEgjbKojIVAgqR4E4ABajrjb/bJzCT5MBVZkF5eEPR6USA==}
 
   noicss.toggle@1.0.2:
     resolution: {integrity: sha512-FxztF4FsXJh3bb5rGZzwy1WWYwsNPX5eT0YqmE2SHi8P7UNRR5PcXgVGqigrbzjdzlhzZrGUNhgeAXUdunfDAA==}
@@ -1240,7 +1240,7 @@ snapshots:
 
   noicss.reducedmotion@1.0.2: {}
 
-  noicss.reset@1.8.2: {}
+  noicss.reset@1.9.0: {}
 
   noicss.toggle@1.0.2: {}
 
