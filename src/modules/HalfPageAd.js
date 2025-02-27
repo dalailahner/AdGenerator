@@ -238,7 +238,7 @@ const HalfPageAd = {
         }
       }
       .textCont {
-        padding: 0 2rem;
+        padding: 0 1.5rem;
         width: 100%;
         height: 100%;
         display: flex;
@@ -248,6 +248,7 @@ const HalfPageAd = {
         gap: 1rem;
         color: var(--fontColor);
         font-family: var(--fontFamily);
+        word-break: break-word;
 
         & .headline {
           color: inherit;

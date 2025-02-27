@@ -6,7 +6,10 @@
 
 @layer main {
   :root {
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: auto;
+    @media screen and (width > 1400px) {
+      scrollbar-gutter: stable both-edges;
+    }
     --accentColor: #0358a9;
     --textColor: #191919;
     --bgColor: #fff;
@@ -15,6 +18,8 @@
     --infinity: calc(infinity * 1px);
     --formGap: 2rem;
     --inputWidth: max(50%, 300px);
+
+    --highlightedTextColor: var(--bgColor);
 
     --noicssToggleWidth: 2.5rem;
     --noicssToggleHeight: 1.5rem;
@@ -49,6 +54,22 @@
     cursor: pointer;
   }
 
+  .sizeNotifier {
+    width: 100vw;
+    height: 100dvh;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--textColor);
+    background-color: var(--bgColor);
+
+    @media screen and (width > 999px) {
+      display: none;
+    }
+  }
+
   main {
     padding: 0 1rem;
     display: grid;
@@ -59,17 +80,21 @@
       "input"
       "output"
       ".";
-    gap: 5rem;
+    gap: var(--formGap) 0;
     place-items: start center;
 
-    @media screen and (width > 768px) {
+    @media screen and (width < 1000px) {
+      display: none;
+    }
+
+    @media screen and (width > 1400px) {
       grid-template-columns: 3fr 2fr;
       grid-template-rows: 8rem auto 5rem;
       grid-template-areas:
         "headline ."
         "input output"
         ". .";
-      gap: 0;
+      gap: 0 var(--formGap);
     }
   }
 
@@ -359,16 +384,38 @@
 
   .outputSection {
     grid-area: output;
-    container-name: output;
-    container-type: inline-size;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    place-items: center;
+    gap: var(--formGap) 0;
   }
 
   .preview {
     box-sizing: content-box;
-    width: 300px;
-    height: 600px;
-    border: 12px solid oklch(from var(--textColor) calc(l + 0.15) c h);
-    border-radius: 8px;
+    display: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: #fff;
+
+    &[srcdoc] {
+      display: unset;
+    }
+
+    &#billboard {
+      grid-column: 1 / -1;
+      grid-row: 1 / span 1;
+      width: 970px;
+      height: 250px;
+    }
+
+    &#mediumRectangle {
+      width: 300px;
+      height: 250px;
+    }
+
+    &#halfPageAd {
+      width: 300px;
+      height: 600px;
+    }
   }
 }
