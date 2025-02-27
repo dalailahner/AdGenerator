@@ -1,5 +1,7 @@
 import FontPicker from "font-picker";
-import HalfPageAd from "./modules/HalfPageAd";
+import Billboard from "./modules/Billboard.js";
+import MediumRectangle from "./modules/MediumRectangle.js";
+import HalfPageAd from "./modules/HalfPageAd.js";
 
 //---------
 // GLOBALS
@@ -10,7 +12,7 @@ const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", fals
 //-------
 // SETUP
 const fontPicker = new FontPicker("AIzaSyBc8NDnGvm0qzqTV85De1AWiQlFkOUbhRw", "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
-const imgWorker = new Worker(new URL("modules/imgWorker.js", import.meta.url), {
+const imgWorker = new Worker(new URL("./modules/imgWorker.js", import.meta.url), {
   type: "module",
 });
 
@@ -26,11 +28,13 @@ imgWorker.addEventListener("message", (ev) => {
 
   switch (name) {
     case "adImgUpload":
-      formData.set("hpaImg", ev.data.base64);
+      formData.set("bbImg", ev.data.bbBase64);
+      formData.set("mrImg", ev.data.mrBase64);
+      formData.set("hpaImg", ev.data.hpaBase64);
       break;
 
     case "logoUpload":
-      formData.set("logo", ev.data.base64);
+      formData.set("logo", ev.data.logoBase64);
       break;
 
     default:
@@ -74,9 +78,10 @@ function formSubmit(event) {
     imgWorker.postMessage({
       name: "adImgUpload",
       imageData: formData.get("adImgUpload"),
-      options: {
-        width: 600,
-        height: 600,
+      sizes: {
+        bb: { width: 325, height: 250 },
+        mr: { width: 600, height: 500 },
+        hpa: { width: 600, height: 600 },
       },
     });
   }
@@ -87,9 +92,8 @@ function formSubmit(event) {
     imgWorker.postMessage({
       name: "logoUpload",
       imageData: formData.get("logoUpload"),
-      options: {
-        width: 300,
-        height: 100,
+      sizes: {
+        logo: { width: 300, height: 100 },
       },
     });
   }
@@ -121,9 +125,14 @@ function updatePreview() {
   // log data:
   console.log("updating preview with form data: ", formData);
 
-  // ad preview
-  const previewIframe = document.querySelector(".preview");
-  if (previewIframe) {
-    previewIframe.srcdoc = HalfPageAd.getCode(formData, "preview");
+  // update iframes
+  function updateIframe(iframeSelector, moduleName) {
+    const iframe = document.querySelector(iframeSelector);
+    if (iframe) {
+      iframe.srcdoc = moduleName.getCode(formData, "preview");
+    }
   }
+  updateIframe(".preview#billboard", Billboard);
+  updateIframe(".preview#mediumRectangle", MediumRectangle);
+  updateIframe(".preview#halfPageAd", HalfPageAd);
 }

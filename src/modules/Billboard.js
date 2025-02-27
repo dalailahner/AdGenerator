@@ -1,4 +1,4 @@
-const HalfPageAd = {
+const Billboard = {
   getCode(formData, mode = "output") {
     let imgSrc = "";
     let logoSrc = "";
@@ -11,7 +11,7 @@ const HalfPageAd = {
         break;
 
       case "preview":
-        imgSrc = formData.get("hpaImg") ? formData.get("hpaImg") : "";
+        imgSrc = formData.get("bbImg") ? formData.get("bbImg") : "";
         logoSrc = logoAvailable ? formData.get("logo") : "";
         break;
 
@@ -218,16 +218,18 @@ const HalfPageAd = {
         background-color: var(--bgColor);
       }
       .mainCont {
-        padding-bottom: 1rem;
         width: 100%;
         height: 100svh;
         display: grid;
-        grid-template-rows: ${logoAvailable ? "3fr 2fr 1fr" : "1fr 1fr"};
+        grid-template-columns: 1fr 2fr;
+        grid-template-rows: ${logoAvailable ? "2fr 1fr" : "auto"};
         place-items: center;
         row-gap: 1rem;
         overflow: hidden;
       }
       .imageCont {
+        grid-column: 1 / 2;
+        grid-row: 1 / -1;
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -238,14 +240,14 @@ const HalfPageAd = {
         }
       }
       .textCont {
-        padding: 0 1.5rem;
+        padding: ${logoAvailable ? "0.5rem 2rem 0 2rem" : "0 2rem"};
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 1rem;
+        gap: ${logoAvailable ? "0.5rem" : "1rem"};
         color: var(--fontColor);
         font-family: var(--fontFamily);
         word-break: break-word;
@@ -289,7 +291,7 @@ const HalfPageAd = {
         }
       }
       .logoCont {
-        padding: 0 2rem;
+        padding: 0 2rem 0.5rem;
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -378,4 +380,4 @@ const HalfPageAd = {
   },
 };
 
-export default HalfPageAd;
+export default Billboard;

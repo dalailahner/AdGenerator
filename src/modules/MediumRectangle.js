@@ -1,4 +1,4 @@
-const HalfPageAd = {
+const MediumRectangle = {
   getCode(formData, mode = "output") {
     let imgSrc = "";
     let logoSrc = "";
@@ -11,7 +11,7 @@ const HalfPageAd = {
         break;
 
       case "preview":
-        imgSrc = formData.get("hpaImg") ? formData.get("hpaImg") : "";
+        imgSrc = formData.get("mrImg") ? formData.get("mrImg") : "";
         logoSrc = logoAvailable ? formData.get("logo") : "";
         break;
 
@@ -218,19 +218,24 @@ const HalfPageAd = {
         background-color: var(--bgColor);
       }
       .mainCont {
-        padding-bottom: 1rem;
+        padding: 1rem;
         width: 100%;
         height: 100svh;
         display: grid;
-        grid-template-rows: ${logoAvailable ? "3fr 2fr 1fr" : "1fr 1fr"};
+        grid-template-rows: ${logoAvailable ? "2fr 1fr" : "auto"};
         place-items: center;
-        row-gap: 1rem;
+        row-gap: 0.5rem;
         overflow: hidden;
       }
       .imageCont {
         width: 100%;
         height: 100%;
+        position: absolute;
+        inset: 0;
         overflow: hidden;
+        animation: fadeOut 1s linear 0s 1 normal both;
+        z-index: -1;
+
         & .image {
           width: 100%;
           height: 100%;
@@ -238,7 +243,6 @@ const HalfPageAd = {
         }
       }
       .textCont {
-        padding: 0 1.5rem;
         width: 100%;
         height: 100%;
         display: flex;
@@ -253,25 +257,17 @@ const HalfPageAd = {
         & .headline {
           color: inherit;
           font-family: inherit;
-          font-size: clamp(1.5rem, 8vmin, 3rem);
+          font-size: 1.2rem;
           font-weight: 700;
           line-height: 1.333;
           transform-origin: 0% 50%;
-          animation: textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 0.25s 1 normal both;
-        }
-        & .subline {
-          color: inherit;
-          font-family: inherit;
-          font-weight: 400;
-          font-size: clamp(1rem, 4vmin, 2rem);
-          transform-origin: 0% 50%;
-          animation: textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 0.5s 1 normal both;
+          animation: fadeIn 1s linear 0.1s 1 normal both, textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 1s 1 normal both;
         }
         & .btn {
           padding: 0.5em 1em;
           color: ${formData.get("ctaTextColor") ? "var(--bgColor)" : "var(--textColor)"};
           font-weight: 700;
-          font-size: clamp(1.1rem, 4vmin, 1.6rem);
+          font-size: 1.1rem;
           letter-spacing: 0.5px;
           line-height: 1;
           text-align: center;
@@ -279,7 +275,7 @@ const HalfPageAd = {
           border: 1px solid var(--accentColor);
           border-radius: 3px;
           background-color: var(--accentColor);
-          animation: btnPulse 3s ease-in-out 0s infinite normal both;
+          animation: btnPulse 3s ease-in-out 0s infinite normal both, fadeIn 1s linear 0.2s 1 normal both;
           transition: all 0.2s ease;
 
           &:is(:hover, :focus-visible) {
@@ -289,14 +285,37 @@ const HalfPageAd = {
         }
       }
       .logoCont {
-        padding: 0 2rem;
         width: 100%;
         height: 100%;
         overflow: hidden;
+        animation: fadeIn 1s linear 0.3s 1 normal both;
+
         & .logo {
           width: 100%;
           height: 100%;
           object-fit: contain;
+        }
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        90% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.2;
         }
       }
       @keyframes textFadeIn {
@@ -363,9 +382,8 @@ const HalfPageAd = {
         <img class="image" src="${imgSrc}" alt="" />
       </div>
       <div class="textCont">
-      <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
-      <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : "Subline"}</p>
-      <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
+        <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
+        <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
       </div>
       <div class="logoCont" ${logoAvailable ? "" : 'style="display: none"'}>
         <img class="logo" src="${logoSrc}" alt="" />
@@ -378,4 +396,4 @@ const HalfPageAd = {
   },
 };
 
-export default HalfPageAd;
+export default MediumRectangle;
