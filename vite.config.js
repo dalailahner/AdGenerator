@@ -4,6 +4,7 @@ import browserslist from "browserslist";
 
 export default defineConfig({
   publicDir: "static",
+  base: "./",
   css: {
     transformer: "lightningcss",
     lightningcss: {
