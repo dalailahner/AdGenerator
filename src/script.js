@@ -1,3 +1,5 @@
+const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
+
 import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
@@ -7,11 +9,12 @@ import HalfPageAd from "./modules/HalfPageAd.js";
 // GLOBALS
 const form = document.querySelector("form");
 const formData = new Map();
+const prevImages = new Map().set("adImgUpload", undefined).set("logoUpload", undefined);
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
 
 //-------
 // SETUP
-const fontPicker = new FontPicker("AIzaSyBc8NDnGvm0qzqTV85De1AWiQlFkOUbhRw", "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
+const fontPicker = new FontPicker(GOOGLE_FONT_API_KEY, "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
 const imgWorker = new Worker(new URL("./modules/imgWorker.js", import.meta.url), {
   type: "module",
 });
