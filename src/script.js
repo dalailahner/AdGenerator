@@ -9,7 +9,7 @@ import HalfPageAd from "./modules/HalfPageAd.js";
 // GLOBALS
 const form = document.querySelector("form");
 const formData = new Map();
-const prevImages = new Map().set("adImgUpload", undefined).set("logoUpload", undefined);
+const prevImgUploads = new Map().set("adImgUpload", undefined).set("logoUpload", undefined);
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
 
 //-------
@@ -31,6 +31,7 @@ imgWorker.addEventListener("message", (ev) => {
 
   switch (name) {
     case "adImgUpload":
+      // TODO: don't use formData for the final images, cause of "formData.clear();" on line 73
       formData.set("bbImg", ev.data.bbBase64);
       formData.set("mrImg", ev.data.mrBase64);
       formData.set("hpaImg", ev.data.hpaBase64);
@@ -76,29 +77,41 @@ function formSubmit(event) {
   formData.set("font", fontPicker.getActiveFont());
 
   // ad img upload
-  if (formData.get("adImgUpload")?.size > 0) {
-    loadingStates.set("adImgUpload", true);
-    imgWorker.postMessage({
-      name: "adImgUpload",
-      imageData: formData.get("adImgUpload"),
-      sizes: {
-        bb: { width: 325, height: 250 },
-        mr: { width: 600, height: 500 },
-        hpa: { width: 600, height: 600 },
-      },
-    });
+  if (filesDiffer(prevImgUploads.get("adImgUpload"), formData.get("adImgUpload"))) {
+    console.log("adImgUpload has changed");
+    if (formData.get("adImgUpload")?.size > 0) {
+      loadingStates.set("adImgUpload", true);
+      imgWorker.postMessage({
+        name: "adImgUpload",
+        imageData: formData.get("adImgUpload"),
+        sizes: {
+          bb: { width: 325, height: 250 },
+          mr: { width: 600, height: 500 },
+          hpa: { width: 600, height: 600 },
+        },
+      });
+    }
+    prevImgUploads.set("adImgUpload", structuredClone(formData.get("adImgUpload")));
+  } else {
+    console.log("adImgUpload has not changed");
   }
 
   // logo upload
-  if (formData.get("logoUpload")?.size > 0) {
-    loadingStates.set("logoUpload", true);
-    imgWorker.postMessage({
-      name: "logoUpload",
-      imageData: formData.get("logoUpload"),
-      sizes: {
-        logo: { width: 300, height: 100 },
-      },
-    });
+  if (filesDiffer(prevImgUploads.get("logoUpload"), formData.get("logoUpload"))) {
+    console.log("logoUpload has changed");
+    if (formData.get("logoUpload")?.size > 0) {
+      loadingStates.set("logoUpload", true);
+      imgWorker.postMessage({
+        name: "logoUpload",
+        imageData: formData.get("logoUpload"),
+        sizes: {
+          logo: { width: 300, height: 100 },
+        },
+      });
+    }
+    prevImgUploads.set("logoUpload", structuredClone(formData.get("logoUpload")));
+  } else {
+    console.log("logoUpload has not changed");
   }
 
   // reference img upload (for color picker)
@@ -115,6 +128,23 @@ function formSubmit(event) {
   }
 
   updatePreview();
+}
+
+function filesDiffer(fileA, fileB) {
+  if (typeof fileA === "object" && typeof fileB === "object") {
+    const keysToCheck = ["name", "type", "size"];
+    const checkResults = [];
+    for (const key of keysToCheck) {
+      if (typeof fileA[key] !== "undefined" && fileB[key] !== "undefined") {
+        checkResults.push(fileA[key] === fileB[key]);
+      } else {
+        return true;
+      }
+    }
+    return checkResults.includes(false);
+  }
+  console.warn('filesDiffer(); was fed something that is not typeof "object". returning: true');
+  return true;
 }
 
 // update preview iframes
