@@ -6,10 +6,6 @@
 
 @layer main {
   :root {
-    scrollbar-gutter: auto;
-    @media screen and (width > 1400px) {
-      scrollbar-gutter: stable both-edges;
-    }
     --accentColor: #0358a9;
     --textColor: #191919;
     --bgColor: #fff;
@@ -18,9 +14,7 @@
     --infinity: calc(infinity * 1px);
     --formGap: 2rem;
     --inputWidth: max(50%, 300px);
-
     --highlightedTextColor: var(--bgColor);
-
     --noicssToggleWidth: 2.5rem;
     --noicssToggleHeight: 1.5rem;
     --noicssToggleRed: var(--bgColor);
@@ -29,6 +23,12 @@
     --noicssToggleButton: var(--accentColor);
     --noicssToggleButtonBorder: var(--hoverColor);
     --noicssToggleOutline: var(--accentColor);
+
+    scrollbar-gutter: auto;
+
+    @media screen and (width > 1400px) {
+      scrollbar-gutter: stable both-edges;
+    }
   }
 
   * {
@@ -57,11 +57,11 @@
   .sizeNotifier {
     width: 100vw;
     height: 100dvh;
-    position: absolute;
-    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    inset: 0;
     color: var(--textColor);
     background-color: var(--bgColor);
 
@@ -73,27 +73,16 @@
   main {
     padding: 0 1rem;
     display: grid;
-    grid-template-columns: 100%;
-    grid-template-rows: 8rem auto auto 5rem;
-    grid-template-areas:
-      "headline"
-      "input"
-      "output"
-      ".";
-    gap: var(--formGap) 0;
+    grid-template: "headline" 8rem "input" auto "output" auto "." 5rem / 100%;
     place-items: start center;
+    gap: var(--formGap) 0;
 
     @media screen and (width < 1000px) {
       display: none;
     }
 
     @media screen and (width > 1400px) {
-      grid-template-columns: 3fr 2fr;
-      grid-template-rows: 8rem auto 5rem;
-      grid-template-areas:
-        "headline ."
-        "input output"
-        ". .";
+      grid-template: "headline ." 8rem "input output" auto ". ." 5rem / 3fr 2fr;
       gap: 0 var(--formGap);
     }
   }
@@ -188,18 +177,18 @@
   }
 
   :is(input[type="text"], textarea) {
+    padding: 0.33em 0.5em;
     width: 100%;
     min-height: calc(1lh + 0.66em + 4px); /* text + padding + border */
     max-height: fit-content;
-    padding: 0.33em 0.5em;
     color: var(--textColor);
+    overflow-wrap: anywhere;
     border: 2px solid var(--accentColor);
     border-radius: 0 var(--borderRadius) var(--borderRadius) var(--borderRadius);
     background-color: var(--hoverColor);
-    overflow-wrap: anywhere;
-    isolation: isolate;
     resize: vertical;
     transition: background-color 0.15s ease-out;
+    isolation: isolate;
 
     &:is(:hover, :focus-visible) {
       background-color: var(--bgColor);
@@ -213,8 +202,8 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    gap: 0.5em;
     place-items: center start;
+    gap: 0.5em;
 
     & p:first-of-type {
       justify-self: end;
@@ -237,7 +226,7 @@
     }
 
     & svg {
-      rotate: x 0;
+      rotate: x 0deg;
       transition: 0.25s ease-out;
     }
 
@@ -294,7 +283,7 @@
       }
 
       & .dropdown-icon::before {
-        border-top-color: currentColor !important;
+        border-top-color: currentcolor !important;
       }
     }
 
@@ -320,12 +309,7 @@
   .colorPickerGroup {
     min-height: 5lh;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-areas:
-      "colorPickerImg accentColor"
-      "colorPickerImg textColor"
-      "colorPickerImg bgColor";
+    grid-template: "colorPickerImg accentColor" 1fr "colorPickerImg textColor" 1fr "colorPickerImg bgColor" 1fr / 1fr 1fr;
     gap: 0 var(--formGap);
   }
 
@@ -336,9 +320,9 @@
     justify-content: center;
   }
   .colorPickerRefImg {
-    grid-area: colorPickerImg;
     max-width: 100%;
     max-height: 500px;
+    grid-area: colorPickerImg;
   }
 
   .colorInputWithLabelCont {
@@ -379,7 +363,7 @@
     }
   }
 
-  /**********************************/
+  /*********************************  */
   /* OUTPUT (RIGHT SIDE ON DESKTOP) */
 
   .outputSection {
@@ -394,7 +378,7 @@
   .preview {
     box-sizing: content-box;
     display: none;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(0 0 0 / 10%);
     background-color: #fff;
 
     &[srcdoc] {
@@ -402,10 +386,10 @@
     }
 
     &#billboard {
-      grid-column: 1 / -1;
-      grid-row: 1 / span 1;
       width: 970px;
       height: 250px;
+      grid-column: 1 / -1;
+      grid-row: 1 / span 1;
     }
 
     &#mediumRectangle {
