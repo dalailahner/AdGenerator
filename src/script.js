@@ -123,6 +123,9 @@ function formSubmit(event) {
     }
   }
 
+  // CTA btn text color
+  formData.set("ctaTextColor", form.ctaTextColor.checked);
+
   updatePreview();
 }
 
