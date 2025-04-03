@@ -82,7 +82,7 @@
     }
 
     @media screen and (width > 1400px) {
-      grid-template: "headline ." 8rem "input output" auto ". ." 5rem / 3fr 2fr;
+      grid-template: "headline ." 8rem "input output" auto ". ." 5rem / auto 972px;
       gap: 0 var(--formGap);
     }
   }
@@ -373,6 +373,8 @@
     grid-template-rows: auto auto;
     place-items: center;
     gap: var(--formGap) 0;
+    position: sticky;
+    top: var(--formGap);
 
     & .iframeCont {
       width: max-content;
