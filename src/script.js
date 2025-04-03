@@ -1,5 +1,3 @@
-const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
-
 import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
@@ -7,9 +5,10 @@ import HalfPageAd from "./modules/HalfPageAd.js";
 
 //---------
 // GLOBALS
+const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
 const formData = new Map();
-const prevImgUploads = new Map().set("adImgUpload", undefined).set("logoUpload", undefined);
+const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
 
 //-------
@@ -25,11 +24,10 @@ imgWorker.addEventListener("message", (ev) => {
   const name = ev.data.name;
 
   loadingStates.set(name, false);
-  console.log(`got ${name} back from worker.`);
+  console.log(`got "${name}" back from worker.`);
 
   switch (name) {
     case "adImgUpload":
-      // TODO: don't use formData for the final images, cause of "formData.clear();" in the formSubmit() function
       formData.set("bbImg", ev.data.bbBase64);
       formData.set("mrImg", ev.data.mrBase64);
       formData.set("hpaImg", ev.data.hpaBase64);
@@ -64,11 +62,11 @@ document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
 // FUNCTIONS
 
 function formSubmit(event) {
+  console.log("---------- UPDATE START ----------");
   if (event) {
     event?.preventDefault();
   }
   const formDataRaw = new FormData(form);
-  formData.clear();
   for (const entry of formDataRaw.entries()) {
     formData.set(entry[0], entry[1]);
   }
@@ -166,4 +164,6 @@ function updatePreview() {
   updateIframe(".preview#billboard", Billboard);
   updateIframe(".preview#mediumRectangle", MediumRectangle);
   updateIframe(".preview#halfPageAd", HalfPageAd);
+
+  console.log("---------- UPDATE DONE ----------");
 }
