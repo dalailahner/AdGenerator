@@ -7,6 +7,7 @@ import HalfPageAd from "./modules/HalfPageAd.js";
 // GLOBALS
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
+const outputSection = document.querySelector(".outputSection");
 const formData = new Map();
 const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
@@ -63,9 +64,12 @@ document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
 
 function formSubmit(event) {
   console.log("---------- UPDATE START ----------");
+  outputSection.classList.add("loading");
+
   if (event) {
     event?.preventDefault();
   }
+
   const formDataRaw = new FormData(form);
   for (const entry of formDataRaw.entries()) {
     formData.set(entry[0], entry[1]);
@@ -164,9 +168,10 @@ function updatePreview() {
       iframe.srcdoc = moduleName.getCode(formData, "preview");
     }
   }
-  updateIframe(".preview#billboard", Billboard);
-  updateIframe(".preview#mediumRectangle", MediumRectangle);
-  updateIframe(".preview#halfPageAd", HalfPageAd);
+  updateIframe("#billboard", Billboard);
+  updateIframe("#mediumRectangle", MediumRectangle);
+  updateIframe("#halfPageAd", HalfPageAd);
 
   console.log("---------- UPDATE DONE ----------");
+  outputSection.classList.remove("loading");
 }

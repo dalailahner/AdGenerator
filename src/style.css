@@ -373,33 +373,73 @@
     grid-template-rows: auto auto;
     place-items: center;
     gap: var(--formGap) 0;
+
+    & .iframeCont {
+      width: max-content;
+      height: max-content;
+      position: relative;
+
+      &:has(#billboard) {
+        grid-column: 1 / -1;
+        grid-row: 1 / span 1;
+      }
+
+      & .preview {
+        box-sizing: content-box;
+        display: none;
+        border: 1px solid rgb(0 0 0 / 10%);
+        background-color: #fff;
+
+        &[srcdoc] {
+          display: unset;
+        }
+
+        &#billboard {
+          width: 970px;
+          height: 250px;
+        }
+
+        &#mediumRectangle {
+          width: 300px;
+          height: 250px;
+        }
+
+        &#halfPageAd {
+          width: 300px;
+          height: 600px;
+        }
+      }
+
+      & .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        inset: 0;
+        background-color: #cde;
+        visibility: hidden;
+        opacity: 0.9;
+
+        & svg {
+          width: 48px;
+          height: 48px;
+          fill: var(--accentColor);
+          animation: rotate 0.9s linear infinite;
+        }
+      }
+    }
+
+    &.loading .loader {
+      visibility: visible;
+    }
   }
+}
 
-  .preview {
-    box-sizing: content-box;
-    display: none;
-    border: 1px solid rgb(0 0 0 / 10%);
-    background-color: #fff;
-
-    &[srcdoc] {
-      display: unset;
-    }
-
-    &#billboard {
-      width: 970px;
-      height: 250px;
-      grid-column: 1 / -1;
-      grid-row: 1 / span 1;
-    }
-
-    &#mediumRectangle {
-      width: 300px;
-      height: 250px;
-    }
-
-    &#halfPageAd {
-      width: 300px;
-      height: 600px;
-    }
+@keyframes rotate {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
   }
 }
