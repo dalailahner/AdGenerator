@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      client-zip:
+        specifier: ^2.5.0
+        version: 2.5.0
       font-picker:
         specifier: ^3.5.1
         version: 3.5.1
@@ -441,6 +444,9 @@ packages:
 
   caniuse-lite@1.0.30001709:
     resolution: {integrity: sha512-NgL3vUTnDrPCZ3zTahp4fsugQ4dc7EKTSzwQDPEel6DMoMnfH2jhry9n2Zm8onbSR+f/QtKHFOA+iAQu4kbtWA==}
+
+  client-zip@2.5.0:
+    resolution: {integrity: sha512-ydG4nDZesbFurnNq0VVCp/yyomIBh+X/1fZPI/P24zbnG4dtC4tQAfI5uQsomigsUMeiRO2wiTPizLWQh+IAyQ==}
 
   detect-libc@2.0.3:
     resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
@@ -1097,6 +1103,8 @@ snapshots:
       ieee754: 1.2.1
 
   caniuse-lite@1.0.30001709: {}
+
+  client-zip@2.5.0: {}
 
   detect-libc@2.0.3: {}
 

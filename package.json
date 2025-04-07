@@ -15,6 +15,7 @@
     "vite": "^6.2.5"
   },
   "dependencies": {
+    "client-zip": "^2.5.0",
     "font-picker": "^3.5.1",
     "jimp": "^1.6.0",
     "noicss.reducedmotion": "^1.0.2",
