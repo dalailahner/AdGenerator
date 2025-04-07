@@ -1,33 +1,37 @@
 const MediumRectangle = {
-  getCode(formData, mode = "output") {
-    let imgSrc = "";
-    let logoSrc = "";
+  getCode(formData, mode = "displayAd") {
+    const googleAds = mode === "googleAds";
     const logoAvailable = formData.get("logo")?.length > 0;
+    const logoEl = `
+<div class="logoCont">
+  <img class="logo" src="${googleAds ? "assets/logo.png" : formData.get("logo")}" alt="" />
+</div>`;
 
-    switch (mode) {
-      case "output":
-        imgSrc = "./bgImg.jpg";
-        logoSrc = logoAvailable ? "./logo.jpg" : "";
-        break;
-
-      case "preview":
-        imgSrc = formData.get("mrImg") ? formData.get("mrImg") : "";
-        logoSrc = logoAvailable ? formData.get("logo") : "";
-        break;
-
-      default:
-        break;
-    }
+    const clicktagScript = `<script>
+document.body.addEventListener("click", () => {
+  const getUriParams = (function () {
+    let query_string = {};
+    const parmsArray = window.location.search.substring(1).split("&");
+    parmsArray.forEach((param) => {
+      let pair = param.split("=");
+      let val = decodeURIComponent(pair[1]);
+      if (val != "" && pair[0] != "") {
+        query_string[pair[0]] = val;
+      }
+    });
+    return query_string;
+  })();
+  window.open(getUriParams.clicktag, "_blank");
+});
+</script>`;
 
     const outputTxt = `<!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=${formData.get("font").family.replaceAll(" ", "+")}:wght@400;700&display=swap" rel="stylesheet">
-    <title>interstitial</title>
+    <link href="https://fonts.googleapis.com/css2?family=${formData.get("font")?.family.replaceAll(" ", "+")}:wght@400;700&display=swap" rel="stylesheet">
+    <title>Medium Rectangle</title>
     <style>
       @property --accentColor {
         syntax: "<color>";
@@ -275,7 +279,7 @@ const MediumRectangle = {
           border: 1px solid var(--accentColor);
           border-radius: 3px;
           background-color: var(--accentColor);
-          animation: btnPulse 3s ease-in-out 0s infinite normal both, fadeIn 1s linear 0.2s 1 normal both;
+          animation: btnPulse 3s ease-in-out 0s ${googleAds ? "420" : "infinite"} normal both, fadeIn 1s linear 0.2s 1 normal both;
           transition: all 0.2s ease;
 
           &:is(:hover, :focus-visible) {
@@ -379,16 +383,15 @@ const MediumRectangle = {
   <body>
     <div class="mainCont">
       <div class="imageCont">
-        <img class="image" src="${imgSrc}" alt="" />
+        <img class="image" src="${googleAds ? "assets/bgImg.jpg" : formData.get("mrImg")}" alt="" />
       </div>
       <div class="textCont">
         <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
         <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
       </div>
-      <div class="logoCont" ${logoAvailable ? "" : 'style="display: none"'}>
-        <img class="logo" src="${logoSrc}" alt="" />
-      </div>
+      ${logoAvailable ? logoEl : ""}
     </div>
+    ${googleAds ? "" : clicktagScript}
   </body>
 </html>
 `;

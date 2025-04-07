@@ -2,12 +2,14 @@ import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
 import HalfPageAd from "./modules/HalfPageAd.js";
+import { downloadZip } from "client-zip";
 
 //---------
 // GLOBALS
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
 const outputSection = document.querySelector(".outputSection");
+const downloadBtn = document.querySelector(".downloadBtn");
 const formData = new Map();
 const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
@@ -59,16 +61,20 @@ document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
   document.querySelector(".advancedCont").classList.toggle("open");
 });
 
+// download button
+downloadBtn.addEventListener("click", downloadAds);
+
 //-----------
 // FUNCTIONS
 
 function formSubmit(event) {
-  console.log("---------- UPDATE START ----------");
-  outputSection.classList.add("loading");
-
   if (event) {
     event?.preventDefault();
   }
+
+  console.log("---------- UPDATE START ----------");
+  outputSection.classList.add("loading");
+  downloadBtn.setAttribute("disabled", "");
 
   const formDataRaw = new FormData(form);
   for (const entry of formDataRaw.entries()) {
@@ -165,7 +171,9 @@ function updatePreview() {
   function updateIframe(iframeSelector, moduleName) {
     const iframe = document.querySelector(iframeSelector);
     if (iframe) {
-      iframe.srcdoc = moduleName.getCode(formData, "preview");
+      iframe.srcdoc = moduleName.getCode(formData, "displayAd");
+    } else {
+      console.warn(`can't update iframe: iframe "${iframeSelector}" not found`);
     }
   }
   updateIframe("#billboard", Billboard);
@@ -174,4 +182,46 @@ function updatePreview() {
 
   console.log("---------- UPDATE DONE ----------");
   outputSection.classList.remove("loading");
+  downloadBtn.removeAttribute("disabled");
+}
+
+// download btn function (download ads as zip)
+async function downloadAds() {
+  const BBdisplayBlob = new Blob([Billboard.getCode(formData, "displayAd")], { type: "text/html" });
+  const MRdisplayBlob = new Blob([MediumRectangle.getCode(formData, "displayAd")], { type: "text/html" });
+  const HPAdisplayBlob = new Blob([HalfPageAd.getCode(formData, "displayAd")], { type: "text/html" });
+  const BBgoogleAdsBlob = new Blob([Billboard.getCode(formData, "googleAds")], { type: "text/html" });
+  const MRgoogleAdsBlob = new Blob([MediumRectangle.getCode(formData, "googleAds")], { type: "text/html" });
+  const HPAgoogleAdsBlob = new Blob([HalfPageAd.getCode(formData, "googleAds")], { type: "text/html" });
+
+  // pack the GoogleAds html files in a zip
+  // TODO: also pack the images separately in an "assets/" folder for GoogleAds
+  async function createGoogleAdsZipBlob(data) {
+    return await downloadZip([{ name: "index.html", input: data }]).blob();
+  }
+  const BBgoogleAdsZipBlob = await createGoogleAdsZipBlob(BBgoogleAdsBlob);
+  const MRgoogleAdsZipBlob = await createGoogleAdsZipBlob(MRgoogleAdsBlob);
+  const HPAgoogleAdsZipBlob = await createGoogleAdsZipBlob(HPAgoogleAdsBlob);
+
+  // get the parent zip as a Blob
+  const zipBlob = await downloadZip([
+    { name: "BB-970x250.html", input: BBdisplayBlob },
+    { name: "MR-300x250.html", input: MRdisplayBlob },
+    { name: "HPA-300x600.html", input: HPAdisplayBlob },
+    { name: "BB-970x250-googleAds.zip", input: BBgoogleAdsZipBlob },
+    { name: "MR-300x250-googleAds.zip", input: MRgoogleAdsZipBlob },
+    { name: "HPA-300x600-googleAds.zip", input: HPAgoogleAdsZipBlob },
+  ]).blob();
+
+  // init download
+  const downloadLink = document.createElement("a");
+  downloadLink.href = URL.createObjectURL(zipBlob);
+  downloadLink.download = "Display_Werbemittel.zip";
+  downloadLink.click();
+
+  // remove link and revoke your Blob URLs
+  downloadLink.remove();
+  for (const blob of [BBdisplayBlob, MRdisplayBlob, HPAdisplayBlob, BBgoogleAdsBlob, MRgoogleAdsBlob, HPAgoogleAdsBlob, BBgoogleAdsZipBlob, MRgoogleAdsZipBlob, HPAgoogleAdsZipBlob, zipBlob]) {
+    URL.revokeObjectURL(blob);
+  }
 }
