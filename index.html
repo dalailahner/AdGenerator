@@ -17,14 +17,24 @@
     <main>
       <h1 class="pageHeadline">Werbemittel Generator</h1>
       <section class="inputSection">
-        <form>
+        <form novalidate>
           <hr class="trenner" />
-          <!-- prettier-ignore -->
-          <label class="btn mbm" for="adImgUpload">Bild hochladen<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg></label>
-          <input type="file" id="adImgUpload" name="adImgUpload" />
+          <div class="textInputWithLabelCont mbm">
+            <label for="campaign">Kampagnenname</label>
+            <input id="campaign" name="campaign" type="text" maxlength="50" />
+            <p class="errorMsg">Gib einen gültigen Namen für die Kampagne ein (wird nur für die Dateibenennung verwendet)</p>
+          </div>
+          <hr class="trenner" />
+          <div class="fileUploadCont mbm">
+            <!-- prettier-ignore -->
+            <label class="btn" for="adImgUpload">Bild hochladen<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg></label>
+            <p class="errorMsg">Ein Bild wird benötigt (.jpg oder .png).</p>
+            <input type="file" id="adImgUpload" name="adImgUpload" accept="image/jpeg,image/png" />
+          </div>
           <div class="textInputWithLabelCont mbm">
             <label for="headline">Headline</label>
             <input id="headline" name="headline" type="text" maxlength="50" />
+            <p class="errorMsg">Die Headline wird benötigt (max. 50 Zeichen inkl. Leerzeichen).</p>
           </div>
           <div class="textInputWithLabelCont mbm">
             <label for="subline">Subline</label>
@@ -43,16 +53,19 @@
             <div id="font-picker" class="apply-font"></div>
             <hr class="trenner" />
             <h2 class="inputHeadline">Firmenlogo</h2>
-            <!-- prettier-ignore -->
-            <label class="btn" for="logoUpload">Logo hochladen<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg></label>
-            <input type="file" id="logoUpload" name="logoUpload" />
+            <div class="fileUploadCont">
+              <!-- prettier-ignore -->
+              <label class="btn" for="logoUpload">Logo hochladen<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg></label>
+              <!-- TODO: also allow svg uploads for logo -->
+              <input type="file" id="logoUpload" name="logoUpload" accept="image/jpeg,image/png" />
+            </div>
             <hr class="trenner" />
             <h2 class="inputHeadline">Farben</h2>
             <div class="colorPickerGroup">
-              <div class="refImgUploadCont">
+              <div class="fileUploadCont refImgUploadCont">
                 <!-- prettier-ignore -->
                 <label class="btn" for="refImgUpload">Referenzbild hochladen<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 -960 960 960"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg></label>
-                <input type="file" id="refImgUpload" name="refImgUpload" />
+                <input type="file" id="refImgUpload" name="refImgUpload" accept="image/*" />
               </div>
               <img class="colorPickerRefImg" src="" style="display: none" />
               <div class="colorInputWithLabelCont">
