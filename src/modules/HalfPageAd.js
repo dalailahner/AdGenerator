@@ -4,7 +4,7 @@ const HalfPageAd = {
     const logoAvailable = formData.get("logo")?.length > 0;
     const logoEl = `
 <div class="logoCont">
-  <img class="logo" src="${googleAds ? "assets/logo.png" : formData.get("logo")}" alt="" />
+  <img class="logo" src="${formData.get("logo")}" alt="" />
 </div>`;
 
     const clicktagScript = `<script>
@@ -30,6 +30,7 @@ document.body.addEventListener("click", () => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    ${googleAds ? '<meta name="ad.size" content="width=300,height=600">' : ""}
     <link href="https://fonts.googleapis.com/css2?family=${formData.get("font")?.family.replaceAll(" ", "+")}:wght@400;700&display=swap" rel="stylesheet">
     <title>Half Page Ad</title>
     <style>
@@ -364,7 +365,7 @@ document.body.addEventListener("click", () => {
   <body>
     <div class="mainCont">
       <div class="imageCont">
-        <img class="image" src="${googleAds ? "assets/bgImg.jpg" : formData.get("hpaImg")}" alt="" />
+        <img class="image" src="${formData.get("hpaImg")}" alt="" />
       </div>
       <div class="textCont">
       <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
