@@ -214,14 +214,13 @@ async function downloadAds() {
   ]).blob();
 
   // init download
-  const downloadLink = document.createElement("a");
-  downloadLink.href = URL.createObjectURL(zipBlob);
-  downloadLink.download = "Display_Werbemittel.zip";
-  downloadLink.click();
+  const zipBlobURL = URL.createObjectURL(zipBlob);
+  const downloadLinkEl = document.createElement("a");
+  downloadLinkEl.href = zipBlobURL;
+  downloadLinkEl.download = "Display_Werbemittel.zip";
+  downloadLinkEl.click();
 
   // remove link and revoke your Blob URLs
-  downloadLink.remove();
-  for (const blob of [BBdisplayBlob, MRdisplayBlob, HPAdisplayBlob, BBgoogleAdsBlob, MRgoogleAdsBlob, HPAgoogleAdsBlob, BBgoogleAdsZipBlob, MRgoogleAdsZipBlob, HPAgoogleAdsZipBlob, zipBlob]) {
-    URL.revokeObjectURL(blob);
-  }
+  downloadLinkEl.remove();
+  URL.revokeObjectURL(zipBlobURL);
 }
