@@ -11,26 +11,22 @@ ctx.addEventListener("message", async (e) => {
   switch (name) {
     case "adImgUpload":
       if (sizes?.bb && sizes?.mr && sizes?.hpa) {
-        const bbImg = await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.bb.width, h: sizes.bb.height }));
-        const mrImg = await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.mr.width, h: sizes.mr.height }));
-        const hpaImg = await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.hpa.width, h: sizes.hpa.height }));
         ctx.postMessage({
           name: name,
-          bbBase64: await bbImg.getBase64("image/jpeg", { quality: 80 }),
-          mrBase64: await mrImg.getBase64("image/jpeg", { quality: 80 }),
-          hpaBase64: await hpaImg.getBase64("image/jpeg", { quality: 80 }),
+          bbBase64: await getBgImgBase64(sizes.bb, "image/jpeg"),
+          mrBase64: await getBgImgBase64(sizes.mr, "image/jpeg"),
+          hpaBase64: await getBgImgBase64(sizes.hpa, "image/jpeg"),
         });
       } else {
-        console.warn("missing image sizes for transformation. got:", sizes);
+        console.warn("missing bg-image sizes for transformation. got:", sizes);
       }
       break;
 
     case "logoUpload":
       if (sizes?.logo.width && sizes?.logo.height) {
-        const logoImg = await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.contain({ w: sizes.logo.width, h: sizes.logo.height }));
         ctx.postMessage({
           name: name,
-          logoBase64: await logoImg.getBase64("image/png"),
+          logoBase64: await getBgImgBase64(sizes.logo, "image/png"),
         });
       } else {
         console.warn("missing logo size for transformation. got:", sizes);
@@ -40,5 +36,14 @@ ctx.addEventListener("message", async (e) => {
     default:
       console.warn(`WORKER: image name "${name}" not known`);
       break;
+  }
+
+  async function getBgImgBase64(dimensions, mime) {
+    const image = await Jimp.fromBuffer(imageArrayBuffer, (img) => {
+      img.cover({ w: dimensions.width, h: dimensions.height });
+      img.quality(80);
+    });
+    const imageBase64 = image.getBase64(mime);
+    return imageBase64;
   }
 });
