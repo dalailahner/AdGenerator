@@ -255,7 +255,6 @@ async function downloadAds() {
   const HPAgoogleAdsBlob = new Blob([HalfPageAd.getCode(formData, "googleAds")], { type: "text/html" });
 
   // pack the GoogleAds html files in a zip
-  // TODO: also pack the images separately in an "assets/" folder for GoogleAds
   async function createGoogleAdsZipBlob(data) {
     return await downloadZip([{ name: "index.html", input: data }]).blob();
   }
