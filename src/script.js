@@ -11,6 +11,7 @@ const form = document.querySelector("form");
 const outputSection = document.querySelector(".outputSection");
 const downloadBtn = document.querySelector(".downloadBtn");
 const formData = new Map();
+let errorArr = [];
 const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
 const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
 
@@ -62,27 +63,46 @@ document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
 });
 
 // download button
-downloadBtn.addEventListener("click", downloadAds);
+downloadBtn.addEventListener("click", () => {
+  if (errorArr.length > 0) {
+    reportErrors();
+  } else {
+    downloadAds();
+  }
+});
 
 //-----------
 // FUNCTIONS
 
 function formSubmit(event) {
+  console.log("---------- UPDATE START ----------");
   if (event) {
     event?.preventDefault();
   }
 
-  console.log("---------- UPDATE START ----------");
+  // clear error array
+  errorArr = [];
+
+  // display loading states
   outputSection.classList.add("loading");
   downloadBtn.setAttribute("disabled", "");
 
+  // get form data
   const formDataRaw = new FormData(form);
   for (const entry of formDataRaw.entries()) {
     formData.set(entry[0], entry[1]);
   }
-  formData.set("font", fontPicker.getActiveFont());
+
+  // sanitize campaign name
+  formData.set("campaign", formData.get("campaign").replaceAll(/[^\w\d_-]/g, ""));
+  if (formData.get("campaign").length <= 0) {
+    addError("#campaign");
+  }
 
   // ad img upload
+  if (formData.get("adImgUpload")?.size <= 0) {
+    addError("label:has( ~ #adImgUpload)", ".errorMsg:has( + #adImgUpload)");
+  }
   if (filesDiffer(prevImgUploads.get("adImgUpload"), formData.get("adImgUpload"))) {
     console.log("adImgUpload has changed");
     if (formData.get("adImgUpload")?.size > 0) {
@@ -101,6 +121,19 @@ function formSubmit(event) {
   } else {
     console.log("adImgUpload has not changed");
   }
+
+  // headline
+  if (formData.get("headline").replaceAll(/[^\w\d_-]/g, "").length <= 0) {
+    addError("#headline");
+  }
+
+  // cta text
+  if (formData.get("ctaText").replaceAll(/[^\w\d_-]/g, "").length <= 0) {
+    formData.set("ctaText", "");
+  }
+
+  // set custom font
+  formData.set("font", fontPicker.getActiveFont());
 
   // logo upload
   if (filesDiffer(prevImgUploads.get("logoUpload"), formData.get("logoUpload"))) {
@@ -137,6 +170,17 @@ function formSubmit(event) {
   formData.set("ctaTextColor", form.ctaTextColor.checked);
 
   updatePreview();
+}
+
+function addError(faultyElSelector, errorMsgElSelector = `${faultyElSelector} + .errorMsg`) {
+  const faultyEl = document.querySelector(faultyElSelector);
+  const errorMsgEl = document.querySelector(errorMsgElSelector);
+
+  if (faultyEl && errorMsgEl) {
+    errorArr.push({ faultyEl: faultyEl, errorMsgEl: errorMsgEl });
+  } else {
+    console.error(`input error, but didn't find elements: "${faultyElSelector}", "${errorMsgElSelector}"`);
+  }
 }
 
 function filesDiffer(fileA, fileB) {
@@ -185,6 +229,22 @@ function updatePreview() {
   downloadBtn.removeAttribute("disabled");
 }
 
+// report errors
+function reportErrors() {
+  // focus the first faulty element
+  errorArr[0].faultyEl.focus();
+  // show error messages for all errors (debounced)
+  for (const errorObj of errorArr) {
+    errorObj.errorMsgEl.classList.add("show");
+    if (errorObj?.timeoutId) {
+      clearTimeout(errorObj.timeoutId);
+    }
+    errorObj.timeoutId = setTimeout(() => {
+      errorObj.errorMsgEl.classList.remove("show");
+    }, 3000);
+  }
+}
+
 // download btn function (download ads as zip)
 async function downloadAds() {
   const BBdisplayBlob = new Blob([Billboard.getCode(formData, "displayAd")], { type: "text/html" });
@@ -204,23 +264,23 @@ async function downloadAds() {
   const HPAgoogleAdsZipBlob = await createGoogleAdsZipBlob(HPAgoogleAdsBlob);
 
   // get the parent zip as a Blob
-  const zipBlob = await downloadZip([
-    { name: "BB-970x250.html", input: BBdisplayBlob },
-    { name: "MR-300x250.html", input: MRdisplayBlob },
-    { name: "HPA-300x600.html", input: HPAdisplayBlob },
-    { name: "BB-970x250-googleAds.zip", input: BBgoogleAdsZipBlob },
-    { name: "MR-300x250-googleAds.zip", input: MRgoogleAdsZipBlob },
-    { name: "HPA-300x600-googleAds.zip", input: HPAgoogleAdsZipBlob },
+  const parentZipBlob = await downloadZip([
+    { name: `${formData.get("campaign")}-BB-970x250.html`, input: BBdisplayBlob },
+    { name: `${formData.get("campaign")}-MR-300x250.html`, input: MRdisplayBlob },
+    { name: `${formData.get("campaign")}-HPA-300x600.html`, input: HPAdisplayBlob },
+    { name: `${formData.get("campaign")}-BB-970x250-googleAds.zip`, input: BBgoogleAdsZipBlob },
+    { name: `${formData.get("campaign")}-MR-300x250-googleAds.zip`, input: MRgoogleAdsZipBlob },
+    { name: `${formData.get("campaign")}-HPA-300x600-googleAds.zip`, input: HPAgoogleAdsZipBlob },
   ]).blob();
 
   // init download
-  const zipBlobURL = URL.createObjectURL(zipBlob);
   const downloadLinkEl = document.createElement("a");
-  downloadLinkEl.href = zipBlobURL;
-  downloadLinkEl.download = "Display_Werbemittel.zip";
+  const parentZipBlobURL = URL.createObjectURL(parentZipBlob);
+  downloadLinkEl.href = parentZipBlobURL;
+  downloadLinkEl.download = `${formData.get("campaign")}-Display_Werbemittel.zip`;
   downloadLinkEl.click();
 
   // remove link and revoke your Blob URLs
   downloadLinkEl.remove();
-  URL.revokeObjectURL(zipBlobURL);
+  URL.revokeObjectURL(parentZipBlobURL);
 }

@@ -10,6 +10,8 @@
     --textColor: #191919;
     --bgColor: #fff;
     --hoverColor: #f0f8ff;
+    --errorColor: #f53223;
+    --borderThickness: 2px;
     --borderRadius: 3px;
     --infinity: calc(infinity * 1px);
     --formGap: 2rem;
@@ -153,21 +155,12 @@
     }
   }
 
-  input[type="file"] {
-    height: 0;
-    position: absolute;
-    opacity: 0;
-
-    &:focus-visible {
-      outline: none;
-    }
-  }
-
   .textInputWithLabelCont {
     width: var(--inputWidth);
     display: flex;
     flex-direction: column;
     align-items: start;
+    position: relative;
   }
 
   label:has(+ :is(input[type="text"], textarea)) {
@@ -186,11 +179,11 @@
   :is(input[type="text"], textarea) {
     padding: 0.33em 0.5em;
     width: 100%;
-    min-height: calc(1lh + 0.66em + 4px); /* text + padding + border */
+    min-height: calc(1lh + 0.66em + calc(var(--borderThickness) * 2)); /* text + padding + border */
     max-height: fit-content;
     color: var(--textColor);
     overflow-wrap: anywhere;
-    border: 2px solid var(--accentColor);
+    border: var(--borderThickness) solid var(--accentColor);
     border-radius: 0 var(--borderRadius) var(--borderRadius) var(--borderRadius);
     background-color: var(--hoverColor);
     resize: vertical;
@@ -202,6 +195,49 @@
     }
     &:focus-visible {
       outline-color: var(--accentColor);
+    }
+  }
+
+  .errorMsg {
+    padding: 1cap;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-size: 0.875rem;
+    line-height: 1.15;
+    border-top: 2px solid var(--errorColor);
+    border-radius: 0 0 var(--borderRadius) var(--borderRadius);
+    background-color: var(--errorColor);
+    visibility: hidden;
+    opacity: 0;
+    z-index: 10;
+    translate: 0 calc(100% - var(--borderThickness));
+    transition: all 0.25s linear;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  .fileUploadCont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  label:has(~ input[type="file"]:is(:focus, :focus-visible)) {
+    outline: medium solid var(--accentColor);
+  }
+
+  input[type="file"] {
+    height: 0;
+    position: absolute;
+    opacity: 0;
+
+    &:focus-visible {
+      outline: none;
     }
   }
 
@@ -269,21 +305,21 @@
 
     & .dropdown-button {
       padding: 0.5em 1em !important;
-      height: auto !important;
+      min-height: calc(1lh + 0.66em + calc(var(--borderThickness) * 2));
       gap: 0.2em;
       color: var(--hoverColor) !important;
       font-weight: 700;
-      border: 2px solid var(--accentColor) !important;
+      border: var(--borderThickness) solid var(--accentColor) !important;
       border-radius: var(--borderRadius);
       background-color: var(--accentColor) !important;
       transition: all 0.15s ease-out;
-      &:focus-visible {
-        outline: medium solid var(--accentColor) !important;
-      }
 
       &:is(:hover, :focus-visible) {
         color: var(--accentColor) !important;
         background-color: var(--hoverColor) !important;
+      }
+      &:focus-visible {
+        outline: medium solid var(--accentColor) !important;
       }
 
       & .dropdown-font-family {
@@ -297,12 +333,12 @@
 
     & .font-list {
       background-color: var(--hoverColor) !important;
-      box-shadow: inset 0 0 0 2px var(--accentColor) !important;
+      box-shadow: inset 0 0 0 var(--borderThickness) var(--accentColor) !important;
       scrollbar-width: thin;
     }
 
     & .font-list .font-list-item .font-button {
-      border-left: 2px solid var(--accentColor) !important;
+      border-left: var(--borderThickness) solid var(--accentColor) !important;
 
       &.active-font {
         background-color: #cde !important;
@@ -323,9 +359,6 @@
 
   .refImgUploadCont {
     grid-area: colorPickerImg;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .colorPickerRefImg {
     max-width: 100%;
@@ -363,7 +396,7 @@
 
     &::-webkit-color-swatch-wrapper {
       padding: 0;
-      border: 2px solid var(--textColor);
+      border: var(--borderThickness) solid var(--textColor);
     }
 
     &::-webkit-color-swatch {
