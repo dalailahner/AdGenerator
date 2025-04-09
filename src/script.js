@@ -215,7 +215,7 @@ function updatePreview() {
   function updateIframe(iframeSelector, moduleName) {
     const iframe = document.querySelector(iframeSelector);
     if (iframe) {
-      iframe.srcdoc = moduleName.getCode(formData, "displayAd");
+      iframe.srcdoc = moduleName.getCode(formData, false, false);
     } else {
       console.warn(`can't update iframe: iframe "${iframeSelector}" not found`);
     }
@@ -247,12 +247,12 @@ function reportErrors() {
 
 // download btn function (download ads as zip)
 async function downloadAds() {
-  const BBdisplayBlob = new Blob([Billboard.getCode(formData, "displayAd")], { type: "text/html" });
-  const MRdisplayBlob = new Blob([MediumRectangle.getCode(formData, "displayAd")], { type: "text/html" });
-  const HPAdisplayBlob = new Blob([HalfPageAd.getCode(formData, "displayAd")], { type: "text/html" });
-  const BBgoogleAdsBlob = new Blob([Billboard.getCode(formData, "googleAds")], { type: "text/html" });
-  const MRgoogleAdsBlob = new Blob([MediumRectangle.getCode(formData, "googleAds")], { type: "text/html" });
-  const HPAgoogleAdsBlob = new Blob([HalfPageAd.getCode(formData, "googleAds")], { type: "text/html" });
+  const BBdisplayBlob = new Blob([Billboard.getCode(formData, false, true)], { type: "text/html" });
+  const MRdisplayBlob = new Blob([MediumRectangle.getCode(formData, false, true)], { type: "text/html" });
+  const HPAdisplayBlob = new Blob([HalfPageAd.getCode(formData, false, true)], { type: "text/html" });
+  const BBgoogleAdsBlob = new Blob([Billboard.getCode(formData, true, false)], { type: "text/html" });
+  const MRgoogleAdsBlob = new Blob([MediumRectangle.getCode(formData, true, false)], { type: "text/html" });
+  const HPAgoogleAdsBlob = new Blob([HalfPageAd.getCode(formData, true, false)], { type: "text/html" });
 
   // pack the html file in a zip archive
   async function wrapFileInZip(data) {
