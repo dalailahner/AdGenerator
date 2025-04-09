@@ -254,19 +254,22 @@ async function downloadAds() {
   const MRgoogleAdsBlob = new Blob([MediumRectangle.getCode(formData, "googleAds")], { type: "text/html" });
   const HPAgoogleAdsBlob = new Blob([HalfPageAd.getCode(formData, "googleAds")], { type: "text/html" });
 
-  // pack the GoogleAds html files in a zip
-  async function createGoogleAdsZipBlob(data) {
+  // pack the html file in a zip archive
+  async function wrapFileInZip(data) {
     return await downloadZip([{ name: "index.html", input: data }]).blob();
   }
-  const BBgoogleAdsZipBlob = await createGoogleAdsZipBlob(BBgoogleAdsBlob);
-  const MRgoogleAdsZipBlob = await createGoogleAdsZipBlob(MRgoogleAdsBlob);
-  const HPAgoogleAdsZipBlob = await createGoogleAdsZipBlob(HPAgoogleAdsBlob);
+  const BBDisplayZipBlob = await wrapFileInZip(BBdisplayBlob);
+  const MRDisplayZipBlob = await wrapFileInZip(MRdisplayBlob);
+  const HPADisplayZipBlob = await wrapFileInZip(HPAdisplayBlob);
+  const BBgoogleAdsZipBlob = await wrapFileInZip(BBgoogleAdsBlob);
+  const MRgoogleAdsZipBlob = await wrapFileInZip(MRgoogleAdsBlob);
+  const HPAgoogleAdsZipBlob = await wrapFileInZip(HPAgoogleAdsBlob);
 
   // get the parent zip as a Blob
   const parentZipBlob = await downloadZip([
-    { name: `${formData.get("campaign")}-BB-970x250.html`, input: BBdisplayBlob },
-    { name: `${formData.get("campaign")}-MR-300x250.html`, input: MRdisplayBlob },
-    { name: `${formData.get("campaign")}-HPA-300x600.html`, input: HPAdisplayBlob },
+    { name: `${formData.get("campaign")}-BB-970x250.zip`, input: BBDisplayZipBlob },
+    { name: `${formData.get("campaign")}-MR-300x250.zip`, input: MRDisplayZipBlob },
+    { name: `${formData.get("campaign")}-HPA-300x600.zip`, input: HPADisplayZipBlob },
     { name: `${formData.get("campaign")}-BB-970x250-googleAds.zip`, input: BBgoogleAdsZipBlob },
     { name: `${formData.get("campaign")}-MR-300x250-googleAds.zip`, input: MRgoogleAdsZipBlob },
     { name: `${formData.get("campaign")}-HPA-300x600-googleAds.zip`, input: HPAgoogleAdsZipBlob },
