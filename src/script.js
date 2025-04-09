@@ -172,7 +172,7 @@ function formSubmit(event) {
   updatePreview();
 }
 
-function addError(faultyElSelector, errorMsgElSelector = `${faultyElSelector} + .errorMsg`) {
+function addError(faultyElSelector, errorMsgElSelector = `${faultyElSelector} ~ .errorMsg`) {
   const faultyEl = document.querySelector(faultyElSelector);
   const errorMsgEl = document.querySelector(errorMsgElSelector);
 

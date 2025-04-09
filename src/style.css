@@ -5,6 +5,14 @@
 @import url("noicss.reducedmotion") layer(reducedmotion);
 
 @layer main {
+  @keyframes rotate {
+    from {
+      rotate: 0deg;
+    }
+    to {
+      rotate: 360deg;
+    }
+  }
   :root {
     --accentColor: #0358a9;
     --textColor: #191919;
@@ -15,7 +23,10 @@
     --borderRadius: 3px;
     --infinity: calc(infinity * 1px);
     --formGap: 2rem;
+    --inputBlockPaddingMult: 0.33;
+    --inputFontMult: 1.2;
     --inputWidth: max(50%, 300px);
+    --inputHeight: calc(calc(1rlh * var(--inputFontMult)) + calc(calc(1rem * var(--inputFontMult)) * calc(var(--inputBlockPaddingMult) * 2)) + calc(var(--borderThickness) * 2)); /* text + padding + border */
     --highlightedTextColor: var(--bgColor);
     --noicssToggleWidth: 2.5rem;
     --noicssToggleHeight: 1.5rem;
@@ -133,7 +144,7 @@
 
   .inputSection {
     grid-area: input;
-    font-size: 1.2rem;
+    font-size: calc(1rem * var(--inputFontMult));
   }
 
   form,
@@ -185,9 +196,9 @@
   }
 
   :is(input[type="text"], textarea) {
-    padding: 0.33em 0.5em;
+    padding: calc(1em * var(--inputBlockPaddingMult)) 0.5em;
     width: 100%;
-    min-height: calc(1lh + 0.66em + calc(var(--borderThickness) * 2)); /* text + padding + border */
+    min-height: var(--inputHeight);
     max-height: fit-content;
     color: var(--textColor);
     overflow-wrap: anywhere;
@@ -206,6 +217,34 @@
     }
   }
 
+  .inputInfo {
+    padding: 0 1em;
+    height: var(--inputHeight);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: var(--hoverColor);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0.1px;
+    border: none;
+    border-radius: 0 var(--borderRadius) var(--borderRadius) 0;
+    background-color: var(--accentColor);
+    clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
+    visibility: hidden;
+    z-index: 10;
+    translate: calc(100% - var(--borderThickness)) 0;
+    transition: all 0.15s ease-out;
+
+    :is(input[type="text"], textarea):focus ~ & {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      visibility: visible;
+    }
+  }
+
   .errorMsg {
     padding: 1cap;
     width: 100%;
@@ -220,7 +259,7 @@
     background-color: var(--errorColor);
     visibility: hidden;
     opacity: 0;
-    z-index: 10;
+    z-index: 11;
     translate: 0 calc(100% - var(--borderThickness));
     transition: all 0.25s linear;
 
@@ -314,8 +353,8 @@
     box-shadow: none !important;
 
     & .dropdown-button {
-      padding: 0.5em 1em !important;
-      min-height: calc(1lh + 0.66em + calc(var(--borderThickness) * 2));
+      padding: calc(calc(1rem * var(--inputFontMult)) * var(--inputBlockPaddingMult)) 1em !important;
+      min-height: var(--inputHeight);
       gap: 0.2em;
       color: var(--hoverColor) !important;
       font-weight: 700;
@@ -484,14 +523,5 @@
     &.loading .loader {
       visibility: visible;
     }
-  }
-}
-
-@keyframes rotate {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: 360deg;
   }
 }
