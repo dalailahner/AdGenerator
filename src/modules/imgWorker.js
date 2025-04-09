@@ -26,7 +26,7 @@ ctx.addEventListener("message", async (e) => {
       if (sizes?.logo.width && sizes?.logo.height) {
         ctx.postMessage({
           name: name,
-          logoBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.logo.width, h: sizes.logo.height }).getBase64("image/png")),
+          logoBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.contain({ w: sizes.logo.width, h: sizes.logo.height }).getBase64("image/png")),
         });
       } else {
         console.warn("WORKER: missing logo size for transformation. got:", sizes);
