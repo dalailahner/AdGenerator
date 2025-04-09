@@ -1,6 +1,12 @@
 const Billboard = {
-  getCode(formData, mode = "displayAd") {
-    const googleAds = mode === "googleAds";
+  /**
+   * get the html code for the Billboard as a string
+   * @param {object} formData the data thats gonna be inserted into the ad like text and colors
+   * @param {boolean} [googleAds=false] set specific GoogleAds things like <meta name="ad.size"> or set infinite animations to a big funny number
+   * @param {boolean} [clicktag=false] insert a script into the ad with the code for a clicktag (defaults to false for GoogleAds)
+   * @returns html code as a string
+   */
+  getCode(formData, googleAds = false, clicktag = false) {
     const logoAvailable = formData.get("logo")?.length > 0;
     const logoEl = `
 <div class="logoCont">
@@ -256,7 +262,6 @@ document.body.addEventListener("click", () => {
         color: var(--fontColor);
         font-family: var(--fontFamily);
         word-break: break-word;
-
         & .headline {
           color: inherit;
           font-family: inherit;
@@ -305,6 +310,12 @@ document.body.addEventListener("click", () => {
           height: 100%;
           object-fit: contain;
         }
+      }
+      .fakeBorder {
+        position: absolute;
+        inset: 0;
+        border: 1px solid #b3b3b3;
+        pointer-events: none;
       }
       @keyframes textFadeIn {
         from {
@@ -376,7 +387,15 @@ document.body.addEventListener("click", () => {
       </div>
       ${logoAvailable ? logoEl : ""}
     </div>
-    ${googleAds ? "" : clicktagScript}
+    <div class="fakeBorder"></div>
+    <script>
+      for (const link of document.querySelectorAll("a")) {
+        link.addEventListener("click", (ev) => {
+          ev.preventDefault();
+        });
+      }
+    </script>
+    ${clicktag && !googleAds ? clicktagScript : ""}
   </body>
 </html>
 `;
