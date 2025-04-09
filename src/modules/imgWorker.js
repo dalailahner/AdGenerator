@@ -14,8 +14,8 @@ ctx.addEventListener("message", async (e) => {
         ctx.postMessage({
           name: name,
           bbBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.bb.width, h: sizes.bb.height }).getBase64("image/jpeg", { quality: "80" })),
-          mrBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.mr.width, h: sizes.mr.height }).getBase64("image/jpeg", { quality: "80" })),
-          hpaBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.hpa.width, h: sizes.hpa.height }).getBase64("image/jpeg", { quality: "80" })),
+          mrBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.mr.width, h: sizes.mr.height }).getBase64("image/jpeg", { quality: "60" })),
+          hpaBase64: await Jimp.fromBuffer(imageArrayBuffer).then((img) => img.cover({ w: sizes.hpa.width, h: sizes.hpa.height }).getBase64("image/jpeg", { quality: "60" })),
         });
       } else {
         console.warn("WORKER: missing bg-img sizes for transformation. got:", sizes);
