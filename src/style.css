@@ -204,7 +204,9 @@
     position: absolute;
     bottom: 0;
     font-size: 0.875rem;
+    font-weight: 700;
     line-height: 1.15;
+    letter-spacing: 0.1px;
     border-top: 2px solid var(--errorColor);
     border-radius: 0 0 var(--borderRadius) var(--borderRadius);
     background-color: var(--errorColor);
