@@ -39,6 +39,7 @@ imgWorker.addEventListener("message", (ev) => {
 
     case "logoUpload":
       formData.set("logo", ev.data.logoBase64);
+      form?.querySelector("#logoUpload ~ .clearLogoInput").classList.add("show");
       break;
 
     default:
@@ -53,13 +54,32 @@ imgWorker.addEventListener("message", (ev) => {
 form.addEventListener("submit", (ev) => formSubmit(ev));
 
 // input change
-for (const el of form.querySelectorAll(":is(input, textarea)")) {
-  el.addEventListener("change", (ev) => formSubmit(ev));
+const inputEls = form?.querySelectorAll(":is(input, textarea)");
+if (inputEls) {
+  for (const el of inputEls) {
+    el.addEventListener("change", (ev) => formSubmit(ev));
+  }
 }
 
 // advanced tab
-document.querySelector(".advancedBtn").addEventListener("click", (ev) => {
-  document.querySelector(".advancedCont").classList.toggle("open");
+document?.querySelector(".advancedBtn").addEventListener("click", (ev) => {
+  document?.querySelector(".advancedCont").classList.toggle("open");
+});
+
+// remove logo button
+form?.querySelector("#logoUpload ~ .clearLogoInput").addEventListener("click", (ev) => {
+  form.querySelector("#logoUpload").value = null;
+  ev.currentTarget.classList.remove("show");
+  formData.delete("logo");
+  formSubmit(ev);
+});
+
+// remove ref image
+form?.querySelector(".colorPickerRefImgCont .clearRefImgInput").addEventListener("click", (ev) => {
+  form.querySelector("#refImgUpload").value = null;
+  document?.querySelector(".colorPickerRefImgCont").classList.remove("show");
+  document?.querySelector(".refImgUploadCont").classList.add("show");
+  formSubmit(ev);
 });
 
 // download button
@@ -155,13 +175,13 @@ function formSubmit(event) {
 
   // reference img upload (for color picker)
   if (formData.get("refImgUpload")?.size > 0) {
-    const colorPickerRefImg = document?.querySelector(".colorPickerRefImg");
-    if (colorPickerRefImg) {
-      colorPickerRefImg.src = URL.createObjectURL(formData.get("refImgUpload"));
-      colorPickerRefImg.style.display = "block";
+    const colorPickerRefImgCont = document?.querySelector(".colorPickerRefImgCont");
+    if (colorPickerRefImgCont) {
+      colorPickerRefImgCont.querySelector(".colorPickerRefImg").src = URL.createObjectURL(formData.get("refImgUpload"));
+      colorPickerRefImgCont.classList.add("show");
       const refImgUploadCont = document?.querySelector(".refImgUploadCont");
       if (refImgUploadCont) {
-        refImgUploadCont.style.display = "none";
+        refImgUploadCont.classList.remove("show");
       }
     }
   }

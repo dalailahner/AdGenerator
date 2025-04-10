@@ -274,19 +274,23 @@
     align-items: center;
     justify-content: center;
     position: relative;
-  }
 
-  label:has(~ input[type="file"]:is(:focus, :focus-visible)) {
-    outline: medium solid var(--accentColor);
-  }
+    & label:has(~ input[type="file"]) {
+      height: var(--inputHeight);
+    }
 
-  input[type="file"] {
-    height: 0;
-    position: absolute;
-    opacity: 0;
+    & label:has(~ input[type="file"]:is(:focus, :focus-visible)) {
+      outline: medium solid var(--accentColor);
+    }
 
-    &:focus-visible {
-      outline: none;
+    & input[type="file"] {
+      height: 0;
+      position: absolute;
+      opacity: 0;
+
+      &:focus-visible {
+        outline: none;
+      }
     }
   }
 
@@ -399,6 +403,36 @@
     }
   }
 
+  .clearLogoInput {
+    padding: 0;
+    width: var(--inputHeight);
+    height: var(--inputHeight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+    color: var(--errorColor);
+    font-size: 2rem;
+    border: 2px solid var(--errorColor);
+    border-radius: var(--infinite);
+    background-color: var(--bgColor);
+    visibility: hidden;
+    opacity: 0;
+    translate: calc(100% + 0.5em) 0;
+    transition: all 0.15s linear;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    &:is(:hover, :focus-visible) {
+      color: var(--bgColor);
+      background-color: var(--errorColor);
+    }
+  }
+
   .colorPickerGroup {
     min-height: 5lh;
     display: grid;
@@ -408,11 +442,53 @@
 
   .refImgUploadCont {
     grid-area: colorPickerImg;
+    visibility: hidden;
+    opacity: 0;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+    }
   }
-  .colorPickerRefImg {
-    max-width: 100%;
-    max-height: 500px;
+  .colorPickerRefImgCont {
     grid-area: colorPickerImg;
+    position: relative;
+    visibility: hidden;
+    opacity: 0;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    & .colorPickerRefImg {
+      max-width: 100%;
+      max-height: 500px;
+    }
+
+    & .clearRefImgInput {
+      padding: 0;
+      width: var(--inputHeight);
+      height: var(--inputHeight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: var(--errorColor);
+      font-size: 2rem;
+      border: 2px solid var(--errorColor);
+      border-radius: var(--infinite);
+      background-color: var(--bgColor);
+      translate: 50% -50%;
+      transition: all 0.15s linear;
+
+      &:is(:hover, :focus-visible) {
+        color: var(--bgColor);
+        background-color: var(--errorColor);
+      }
+    }
   }
 
   .colorInputWithLabelCont {
