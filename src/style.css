@@ -414,7 +414,8 @@
     }
   }
 
-  .clearLogoInput {
+  .clearLogoInput,
+  .clearSvgBackgroundInput {
     padding: 0;
     width: var(--inputHeight);
     height: var(--inputHeight);
