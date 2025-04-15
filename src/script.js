@@ -152,8 +152,8 @@ function formSubmit(event) {
     formData.set("ctaText", "");
   }
 
-  // set custom font
-  formData.set("font", fontPicker.getActiveFont());
+  // billboard image position
+  formData.set("BBImgRight", form.BBImgRight.checked);
 
   // logo upload
   if (filesDiffer(prevImgUploads.get("logoUpload"), formData.get("logoUpload"))) {
@@ -172,6 +172,9 @@ function formSubmit(event) {
   } else {
     console.log("logoUpload has not changed");
   }
+
+  // set custom font
+  formData.set("font", fontPicker.getActiveFont());
 
   // reference img upload (for color picker)
   if (formData.get("refImgUpload")?.size > 0) {
