@@ -82,6 +82,14 @@ form?.querySelector(".colorPickerRefImgCont .clearRefImgInput").addEventListener
   formSubmit(ev);
 });
 
+// remove svg background button
+form?.querySelector("#svgBackgroundUpload ~ .clearSvgBackgroundInput").addEventListener("click", (ev) => {
+  form.querySelector("#svgBackgroundUpload").value = null;
+  ev.currentTarget.classList.remove("show");
+  formData.delete("svgBackground");
+  formSubmit(ev);
+});
+
 // download button
 downloadBtn.addEventListener("click", () => {
   if (errorArr.length > 0) {
@@ -191,6 +199,20 @@ function formSubmit(event) {
 
   // CTA btn text color
   formData.set("ctaTextColor", form.ctaTextColor.checked);
+
+  // svg background pattern
+  // TODO: parse svg from upload and put it into the ads
+  console.log("ENCODED 0", formData.get("svgBackgroundUpload"));
+  if (formData.get("svgBackgroundUpload")?.size > 0) {
+    let encodedSVG = formData.get("svgBackgroundUpload");
+    console.log("ENCODED 1", encodedSVG.files[0]);
+    encodedSVG = encodedSVG.replace(/"/g, `'`);
+    encodedSVG = encodedSVG.replace(/>\s{1,}</g, "><");
+    encodedSVG = encodedSVG.replace(/\s{2,}/g, " ");
+    encodedSVG = encodedSVG.replace(/[\r\n%#()<>?[\\\]^`{|}]/g, encodeURIComponent);
+    formData.set("ENCODED 2", encodedSVG);
+    console.log(formData.get("svgBackground"));
+  }
 
   updatePreview();
 }
