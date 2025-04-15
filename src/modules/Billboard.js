@@ -383,7 +383,7 @@ document.body.addEventListener("click", () => {
       </div>
       <div class="textCont">
       <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
-      <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : "Subline"}</p>
+      <p class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : ""}</p>
       <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
       </div>
       ${logoAvailable ? logoEl : ""}
