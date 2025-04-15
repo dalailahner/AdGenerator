@@ -7,6 +7,7 @@ const Billboard = {
    * @returns html code as a string
    */
   getCode(formData, googleAds = false, clicktag = false) {
+    const BBImgRight = formData.get("BBImgRight");
     const logoAvailable = formData.get("logo")?.length > 0;
     const logoEl = `
 <div class="logoCont">
@@ -232,14 +233,14 @@ document.body.addEventListener("click", () => {
         width: 100%;
         height: 100svh;
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: ${BBImgRight ? "2fr 1fr" : "1fr 2fr"};
         grid-template-rows: ${logoAvailable ? "2fr 1fr" : "auto"};
         place-items: center;
         row-gap: 1rem;
         overflow: hidden;
       }
       .imageCont {
-        grid-column: 1 / 2;
+        grid-column: ${BBImgRight ? "-2 / -1" : "1 / 2"};
         grid-row: 1 / -1;
         width: 100%;
         height: 100%;
