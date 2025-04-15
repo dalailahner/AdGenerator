@@ -8,6 +8,29 @@ const HalfPageAd = {
    */
   getCode(formData, googleAds = false, clicktag = false) {
     const logoAvailable = formData.get("logo")?.length > 0;
+    const cutImg = formData.get("cutImg");
+    let clipPath = "";
+    switch (cutImg) {
+      case "round":
+        clipPath = "ellipse(175% 100% at 0% 0%)";
+        break;
+
+      case "roundInverted":
+        clipPath = "ellipse(175% 100% at 100% 0%)";
+        break;
+
+      case "angle":
+        clipPath = "polygon(0% 0%, 100% 0%, 100% 85%, 0% 100%)";
+        break;
+
+      case "angleInverted":
+        clipPath = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 85%)";
+        break;
+
+      default:
+        clipPath = "none";
+        break;
+    }
     const logoEl = `
 <div class="logoCont">
   <img class="logo" src="${formData.get("logo")}" alt="" />
@@ -242,6 +265,7 @@ document.body.addEventListener("click", () => {
         width: 100%;
         height: 100%;
         overflow: hidden;
+        clip-path: ${clipPath};
         & .image {
           width: 100%;
           height: 100%;

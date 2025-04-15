@@ -9,6 +9,29 @@ const Billboard = {
   getCode(formData, googleAds = false, clicktag = false) {
     const BBImgRight = formData.get("BBImgRight");
     const logoAvailable = formData.get("logo")?.length > 0;
+    const cutImg = formData.get("cutImg");
+    let clipPath = "";
+    switch (cutImg) {
+      case "round":
+        clipPath = BBImgRight ? "ellipse(60% 135% at 60% 100%)" : "ellipse(60% 135% at 40% 100%)";
+        break;
+
+      case "roundInverted":
+        clipPath = BBImgRight ? "ellipse(60% 135% at 60% 0%)" : "ellipse(60% 135% at 40% 0%)";
+        break;
+
+      case "angle":
+        clipPath = BBImgRight ? "polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)" : "polygon(0% 0%, 85% 0%, 100% 100%, 0% 100%)";
+        break;
+
+      case "angleInverted":
+        clipPath = BBImgRight ? "polygon(0% 0%, 100% 0%, 100% 100%, 15% 100%)" : "polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%)";
+        break;
+
+      default:
+        clipPath = "none";
+        break;
+    }
     const logoEl = `
 <div class="logoCont">
   <img class="logo" src="${formData.get("logo")}" alt="" />
@@ -245,6 +268,7 @@ document.body.addEventListener("click", () => {
         width: 100%;
         height: 100%;
         overflow: hidden;
+        clip-path: ${clipPath};
         & .image {
           width: 100%;
           height: 100%;
