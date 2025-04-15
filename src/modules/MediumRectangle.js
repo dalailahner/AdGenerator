@@ -267,7 +267,7 @@ document.body.addEventListener("click", () => {
         & .headline {
           color: inherit;
           font-family: inherit;
-          font-size: 1.2rem;
+          font-size: 1.333rem;
           font-weight: 700;
           line-height: 1.333;
           transform-origin: 0% 50%;
