@@ -1,3 +1,4 @@
+import presets from "./modules/presets.js";
 import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
@@ -61,6 +62,9 @@ if (inputEls) {
   }
 }
 
+form?.querySelector("#preset").addEventListener("change", (ev) => {
+  applyPreset(ev.currentTarget.value);
+});
 // advanced tab
 document?.querySelector(".advancedBtn").addEventListener("click", (ev) => {
   document?.querySelector(".advancedCont").classList.toggle("open");
@@ -282,6 +286,10 @@ function updatePreview() {
   console.log("---------- UPDATE DONE ----------");
   outputSection.classList.remove("loading");
   downloadBtn.removeAttribute("disabled");
+}
+
+function applyPreset(name) {
+  console.log(presets[name]);
 }
 
 // report errors

@@ -97,7 +97,7 @@
   label:has(~ :where(input[type="file"], input[type="radio"])) {
     height: var(--inputHeight);
   }
-  label:has(~ :where(input[type="file"], input[type="radio"]):is(:focus, :focus-visible)) {
+  label:has(~ :where(input[type="file"], input[type="radio"]):where(:focus, :focus-visible)) {
     outline: medium solid var(--accentColor);
   }
   :where(input[type="file"], input[type="radio"]) {
@@ -198,7 +198,7 @@
     position: relative;
   }
 
-  label:has(+ :is(input[type="text"], textarea)) {
+  label:has(+ :where(input[type="text"], textarea)) {
     padding: 0 0.5em;
     position: relative;
     color: var(--hoverColor);
@@ -282,6 +282,20 @@
     &.show {
       visibility: visible;
       opacity: 1;
+    }
+  }
+
+  .selectWithLabelCont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: calc(var(--formGap) / 2);
+
+    & label {
+      justify-self: end;
+    }
+    & select {
+      justify-self: start;
     }
   }
 
