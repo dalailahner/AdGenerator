@@ -232,11 +232,11 @@ document.body.addEventListener("click", () => {
         background-position: center;
       }
       .mainCont {
-        padding: 1rem;
+        padding: 0.5rem 1rem;
         width: 100%;
         height: 100svh;
         display: grid;
-        grid-template-rows: ${logoAvailable ? "2fr 1fr" : "auto"};
+        grid-template-rows: ${logoAvailable ? "3fr 1fr" : "auto"};
         place-items: center;
         row-gap: 0.5rem;
         overflow: hidden;
@@ -249,7 +249,6 @@ document.body.addEventListener("click", () => {
         overflow: hidden;
         animation: fadeOut 1s linear 0s 1 normal both;
         z-index: -1;
-
         & .image {
           width: 100%;
           height: 100%;
@@ -267,14 +266,33 @@ document.body.addEventListener("click", () => {
         color: var(--fontColor);
         font-family: var(--fontFamily);
         word-break: break-word;
-        & .headline {
-          color: inherit;
-          font-family: inherit;
-          font-size: 1.333rem;
-          font-weight: 700;
-          line-height: 1.333;
-          transform-origin: 0% 50%;
-          animation: fadeIn 1s linear 0.1s 1 normal both, textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 1s 1 normal both;
+        & .headlineSublineCont {
+          width: 100%;
+          height: ${logoAvailable ? "100%" : "50%"};
+          position: relative;
+          & .headline {
+            position: absolute;
+            inset: 0;
+            align-self: center;
+            color: inherit;
+            font-family: inherit;
+            font-size: 1.333rem;
+            font-weight: 700;
+            line-height: 1.333;
+            transform-origin: 0% 50%;
+            animation: fadeIn 1s linear 0.1s 1 normal both, textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 1s 1 normal both${formData.get("subline")?.length > 0 ? ", headlineChange 6s linear 2s infinite normal forwards" : ""};
+          }
+          & .subline {
+            position: absolute;
+            inset: 0;
+            align-self: center;
+            color: inherit;
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: 400;
+            line-height: 1.2;
+            animation: sublineChange 6s linear 2s infinite normal both;
+          }
         }
         & .btn {
           padding: 0.5em 1em;
@@ -290,7 +308,6 @@ document.body.addEventListener("click", () => {
           background-color: var(--accentColor);
           animation: btnPulse 3s ease-in-out 0s ${googleAds ? "420" : "infinite"} normal both, fadeIn 1s linear 0.2s 1 normal both;
           transition: all 0.2s ease;
-
           &:is(:hover, :focus-visible) {
             color: var(--accentColor);
             background-color: var(--bgColor);
@@ -302,7 +319,6 @@ document.body.addEventListener("click", () => {
         height: 100%;
         overflow: hidden;
         animation: fadeIn 1s linear 0.3s 1 normal both;
-
         & .logo {
           width: 100%;
           height: 100%;
@@ -349,7 +365,50 @@ document.body.addEventListener("click", () => {
           translate: 0 0;
         }
       }
-      @keyframes btnPulse {
+      @keyframes headlineChange {
+        0% {
+          opacity: 1;
+          translate: 0 0;
+        }
+        45% {
+          opacity: 1;
+          translate: 0 0;
+        }
+        50% {
+          opacity: 0;
+          translate: 0 -50px;
+        }
+        95% {
+          opacity: 0;
+          translate: 0 50px;
+        }
+        100% {
+          opacity: 1;
+          translate: 0 0;
+        }
+      }
+      @keyframes sublineChange {
+        0% {
+          opacity: 0;
+          translate: 0 50px;
+        }
+        45% {
+          opacity: 0;
+          translate: 0 50px;
+        }
+        50% {
+          opacity: 1;
+          translate: 0 0;
+        }
+        95% {
+          opacity: 1;
+          translate: 0 0;
+        }
+        100% {
+          opacity: 0;
+          translate: 0 -50px;
+        }
+      }      @keyframes btnPulse {
         0% {
           scale: 1;
         }
@@ -401,7 +460,10 @@ document.body.addEventListener("click", () => {
         <img class="image" src="${formData.get("mrImg")}" alt="" />
       </div>
       <div class="textCont">
-        <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
+        <div class="headlineSublineCont">
+          <h1 class="headline">${formData.get("headline")?.length > 0 ? formData.get("headline") : "Headline"}</h1>
+          <h1 class="subline">${formData.get("subline")?.length > 0 ? formData.get("subline") : ""}</h1>
+        </div>
         <a class="btn" href="#" target="_blank">${formData.get("ctaText")?.length > 0 ? formData.get("ctaText") : "mehr Infos"}</a>
       </div>
       ${logoAvailable ? logoEl : ""}
