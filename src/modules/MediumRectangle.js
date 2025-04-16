@@ -8,6 +8,7 @@ const MediumRectangle = {
    */
   getCode(formData, googleAds = false, clicktag = false) {
     const logoAvailable = formData.get("logo")?.length > 0;
+    const svgBgAvailable = formData.get("svgBackground")?.length > 0;
     const logoEl = `
 <div class="logoCont">
   <img class="logo" src="${formData.get("logo")}" alt="" />
@@ -227,6 +228,8 @@ document.body.addEventListener("click", () => {
       body {
         width: 100%;
         background-color: var(--bgColor);
+        background-image: ${svgBgAvailable ? formData.get("svgBackground") : "none"};
+        background-position: center;
       }
       .mainCont {
         padding: 1rem;
@@ -331,7 +334,7 @@ document.body.addEventListener("click", () => {
           opacity: 1;
         }
         100% {
-          opacity: 0.2;
+          opacity: ${svgBgAvailable ? "0" : "0.2"};
         }
       }
       @keyframes textFadeIn {

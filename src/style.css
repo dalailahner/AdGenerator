@@ -182,11 +182,11 @@
     }
 
     .advancedCont & {
-      opacity: 0;
+      width: 0;
       transition: all 0.15s 0.15s linear;
     }
     .advancedCont.open & {
-      opacity: 1;
+      width: 100%;
     }
   }
 
@@ -331,6 +331,7 @@
   }
 
   .advancedCont {
+    padding-bottom: var(--formGap);
     height: 0;
     overflow: hidden;
     transition: all 0.25s ease-out;
@@ -349,6 +350,16 @@
     width: 100%;
     font-size: 1.2em;
     font-weight: 700;
+  }
+  .headlineInfo {
+    font-size: 0.5em;
+    font-weight: 400;
+
+    & a {
+      color: var(--accentColor);
+      font-size: 1.125em;
+      font-weight: 700;
+    }
   }
 
   .radioCont {
