@@ -260,6 +260,8 @@ document.body.addEventListener("click", () => {
         grid-template-rows: ${logoAvailable ? "2fr 1fr" : "auto"};
         place-items: center;
         row-gap: 1rem;
+        background-image: ${formData.get("svgBackground")?.length > 0 ? formData.get("svgBackground") : "none"};
+        background-position: center;
         overflow: hidden;
       }
       .imageCont {

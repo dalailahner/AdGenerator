@@ -13,7 +13,7 @@ const downloadBtn = document.querySelector(".downloadBtn");
 const formData = new Map();
 let errorArr = [];
 const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
-const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false);
+const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", false).set("svgBackgroundUpload", false);
 
 //-------
 // SETUP
@@ -201,17 +201,27 @@ function formSubmit(event) {
   formData.set("ctaTextColor", form.ctaTextColor.checked);
 
   // svg background pattern
-  // TODO: parse svg from upload and put it into the ads
-  console.log("ENCODED 0", formData.get("svgBackgroundUpload"));
   if (formData.get("svgBackgroundUpload")?.size > 0) {
-    let encodedSVG = formData.get("svgBackgroundUpload");
-    console.log("ENCODED 1", encodedSVG.files[0]);
-    encodedSVG = encodedSVG.replace(/"/g, `'`);
-    encodedSVG = encodedSVG.replace(/>\s{1,}</g, "><");
-    encodedSVG = encodedSVG.replace(/\s{2,}/g, " ");
-    encodedSVG = encodedSVG.replace(/[\r\n%#()<>?[\\\]^`{|}]/g, encodeURIComponent);
-    formData.set("ENCODED 2", encodedSVG);
-    console.log(formData.get("svgBackground"));
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const decodedSVG = e.target.result;
+      // thanks for https://github.com/yoksel/url-encoder/blob/fff61d470f3f042091f048968a79bc702725e35e/src/js/script.js#L134
+      let cleanedSVG = decodedSVG
+        .replace(/"/g, `'`)
+        .replace(/>\s{1,}</g, "><")
+        .replace(/\s{2,}/g, " ")
+        .replace(/[\r\n%#()<>?[\\\]^`{|}]/g, encodeURIComponent);
+      cleanedSVG = `url("data:image/svg+xml,${cleanedSVG}")`;
+      formData.set("svgBackground", cleanedSVG);
+    };
+    reader.onloadend = (e) => {
+      loadingStates.set("svgBackgroundUpload", false);
+      updatePreview();
+      form?.querySelector("#svgBackgroundUpload ~ .clearSvgBackgroundInput").classList.add("show");
+    };
+
+    loadingStates.set("svgBackgroundUpload", true);
+    reader.readAsText(formData.get("svgBackgroundUpload"));
   }
 
   updatePreview();
