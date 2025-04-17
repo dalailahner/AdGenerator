@@ -4,6 +4,7 @@ import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
 import HalfPageAd from "./modules/HalfPageAd.js";
 import { downloadZip } from "client-zip";
+import { data } from "browserslist";
 
 //---------
 // GLOBALS
@@ -288,8 +289,85 @@ function updatePreview() {
   downloadBtn.removeAttribute("disabled");
 }
 
-function applyPreset(name) {
-  console.log(presets[name]);
+async function applyPreset(name) {
+  const preset = presets[name];
+  console.log(`you chose the "${name}" preset:`);
+  console.table(preset);
+
+  if (preset) {
+    for (const [key, value] of Object.entries(preset)) {
+      switch (key) {
+        // file uploads
+        case "adImgUpload":
+        case "logoUpload":
+        case "svgBackgroundUpload": {
+          const input = form.querySelector(`#${key}`);
+          if (value && input) {
+            const response = await fetch(value);
+            if (response.ok) {
+              const blob = await response.blob();
+              const file = new File([blob], value.match(/[\w\d]+\.{1}[\w\d]+/g)?.join(""), { type: blob.type });
+              const dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              input.files = dataTransfer.files;
+            } else {
+              console.warn(`ERROR at applyPreset(): response from image "${key}" is not okay. (status: ${response.status})`);
+            }
+          } else if (value === null && input) {
+            form.querySelector(`#${key} ~ button[class*=" clear"]`)?.click();
+          } else {
+            console.warn(`ERROR at applyPreset(): value or inputEl for "${key}" faulty. got:`);
+            console.table({ key: key, value: value, inputEl: input });
+          }
+          break;
+        }
+
+        // checkboxes (toggles)
+        case "BBImgRight":
+        case "ctaTextColor": {
+          const input = form.querySelector(`[name="${key}"]`);
+          if (typeof value === "boolean" && input) {
+            input.checked = value;
+          } else {
+            console.warn(`ERROR at applyPreset(): value or inputEl for "${key}" faulty. got:`);
+            console.table({ key: key, value: value, inputEl: input });
+          }
+          break;
+        }
+
+        // radio input
+        case "cutImg": {
+          const input = form.querySelector(`#${value}`);
+          if (input) {
+            input.click();
+          } else {
+            console.warn(`ERROR at applyPreset(): value/inputEl for "${key}" faulty. got:`);
+            console.table({ key: key, value: value, inputEl: input });
+          }
+          break;
+        }
+
+        // font picker
+        case "font": {
+          if (value.length > 0) {
+            fontPicker.setActiveFont(value);
+          }
+          break;
+        }
+        // text & color inputs
+        default: {
+          const input = form.querySelector(`#${key}`);
+          if (value && input) {
+            input.value = value;
+          } else {
+            console.warn(`ERROR at applyPreset(): value or inputEl for "${key}" faulty. got:`);
+            console.table({ key: key, value: value, inputEl: input });
+          }
+          break;
+        }
+      }
+    }
+  }
 }
 
 // report errors
