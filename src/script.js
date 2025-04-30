@@ -4,7 +4,6 @@ import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
 import HalfPageAd from "./modules/HalfPageAd.js";
 import { downloadZip } from "client-zip";
-import { data } from "browserslist";
 
 //---------
 // GLOBALS
