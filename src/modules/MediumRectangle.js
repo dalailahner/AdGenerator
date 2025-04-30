@@ -279,6 +279,7 @@ document.body.addEventListener("click", () => {
             font-size: 1.333rem;
             font-weight: 700;
             line-height: 1.333;
+            text-align: center;
             transform-origin: 0% 50%;
             animation: fadeIn 1s linear 0.1s 1 normal both, textFadeIn 0.5s cubic-bezier(0, 0.55, 0.45, 1) 1s 1 normal both${formData.get("subline")?.length > 0 ? ", headlineChange 6s linear 2s infinite normal forwards" : ""};
           }
