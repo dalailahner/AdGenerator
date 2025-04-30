@@ -185,14 +185,41 @@ function formSubmit(event) {
   if (filesDiffer(prevImgUploads.get("logoUpload"), formData.get("logoUpload"))) {
     console.log("logoUpload has changed");
     if (formData.get("logoUpload")?.size > 0) {
-      loadingStates.set("logoUpload", true);
-      imgWorker.postMessage({
-        name: "logoUpload",
-        imageData: formData.get("logoUpload"),
-        sizes: {
-          logo: { width: 300, height: 100 },
-        },
-      });
+      switch (formData.get("logoUpload")?.type) {
+        case "image/svg+xml": {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const decodedSVG = e.target.result;
+            // thanks for https://github.com/yoksel/url-encoder/blob/fff61d470f3f042091f048968a79bc702725e35e/src/js/script.js#L134
+            let cleanedSVG = decodedSVG
+              .replace(/"/g, `'`)
+              .replace(/>\s{1,}</g, "><")
+              .replace(/\s{2,}/g, " ")
+              .replace(/[\r\n%#()<>?[\\\]^`{|}]/g, encodeURIComponent);
+            cleanedSVG = `data:image/svg+xml;utf8,${cleanedSVG}`;
+            formData.set("logo", cleanedSVG);
+          };
+          reader.onloadend = (e) => {
+            loadingStates.set("logoUpload", false);
+            updatePreview();
+            form?.querySelector("#logoUpload ~ .clearLogoInput").classList.add("show");
+          };
+          loadingStates.set("logoUpload", true);
+          reader.readAsText(formData.get("logoUpload"));
+          break;
+        }
+
+        default:
+          loadingStates.set("logoUpload", true);
+          imgWorker.postMessage({
+            name: "logoUpload",
+            imageData: formData.get("logoUpload"),
+            sizes: {
+              logo: { width: 300, height: 100 },
+            },
+          });
+          break;
+      }
     }
     prevImgUploads.set("logoUpload", structuredClone(formData.get("logoUpload")));
   } else {
