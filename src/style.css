@@ -229,7 +229,7 @@
       background-color: var(--bgColor);
     }
     &:focus-visible {
-      outline-color: var(--accentColor);
+      outline: medium solid var(--accentColor);
     }
   }
 
@@ -553,7 +553,7 @@
     transition: all 0.15s ease-out;
 
     &:focus-visible {
-      outline-color: var(--accentColor);
+      outline: medium solid var(--accentColor);
     }
 
     &::-webkit-color-swatch-wrapper {
