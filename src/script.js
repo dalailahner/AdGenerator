@@ -10,6 +10,7 @@ import { data } from "browserslist";
 // GLOBALS
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
+let presetIsFilling = false;
 const outputSection = document.querySelector(".outputSection");
 const downloadBtn = document.querySelector(".downloadBtn");
 const formData = new Map();
@@ -21,6 +22,16 @@ const loadingStates = new Map().set("adImgUpload", false).set("logoUpload", fals
 // SETUP
 const fontPicker = new FontPicker(GOOGLE_FONT_API_KEY, "Open Sans", { categories: ["sans-serif", "serif", "display"], limit: 30, sort: "popularity" }, () => formSubmit());
 const imgWorker = new Worker(new URL("./modules/imgWorker.js", import.meta.url), { type: "module" });
+if (presets && Object.keys(presets).length > 0) {
+  for (const preset of Object.keys(presets)) {
+    const newOption = document.createElement("option");
+    newOption.value = preset;
+    newOption.innerText = preset;
+    form?.querySelector("#preset").append(newOption);
+  }
+} else {
+  console.warn("no presets found");
+}
 
 //--------
 // EVENTS
@@ -108,10 +119,13 @@ downloadBtn.addEventListener("click", () => {
 // FUNCTIONS
 
 function formSubmit(event) {
-  console.log("---------- UPDATE START ----------");
   if (event) {
     event?.preventDefault();
   }
+  if (presetIsFilling) {
+    return;
+  }
+  console.log("---------- UPDATE START ----------");
 
   // clear error array
   errorArr = [];
@@ -290,6 +304,7 @@ function updatePreview() {
 }
 
 async function applyPreset(name) {
+  presetIsFilling = true;
   const preset = presets[name];
   console.log(`you chose the "${name}" preset:`);
   console.table(preset);
@@ -359,6 +374,9 @@ async function applyPreset(name) {
           const input = form.querySelector(`#${key}`);
           if (value && input) {
             input.value = value;
+          }
+          if (value === null && input) {
+            input.value = null;
           } else {
             console.warn(`ERROR at applyPreset(): value or inputEl for "${key}" faulty. got:`);
             console.table({ key: key, value: value, inputEl: input });
@@ -367,6 +385,8 @@ async function applyPreset(name) {
         }
       }
     }
+    presetIsFilling = false;
+    formSubmit();
   }
 }
 
