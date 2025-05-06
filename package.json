@@ -10,16 +10,16 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "browserslist": "^4.24.4",
+    "browserslist": "^4.24.5",
     "lightningcss": "^1.29.3",
-    "vite": "^6.3.4"
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "client-zip": "^2.5.0",
     "font-picker": "^3.5.1",
     "jimp": "^1.6.0",
     "noicss.reducedmotion": "^1.0.2",
-    "noicss.reset": "^1.9.1",
+    "noicss.reset": "^1.10.1",
     "noicss.toggle": "^1.0.2"
   }
 }
