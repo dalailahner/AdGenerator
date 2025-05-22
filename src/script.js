@@ -1,4 +1,5 @@
 import presets from "./modules/presets.js";
+import Cropper from "cropperjs";
 import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
 import MediumRectangle from "./modules/MediumRectangle.js";
@@ -10,8 +11,10 @@ import { downloadZip } from "client-zip";
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
 let presetIsFilling = false;
-const outputSection = document.querySelector(".outputSection");
+const cropperEl = document.querySelector(".cropperCont img");
+let cropper;
 const downloadBtn = document.querySelector(".downloadBtn");
+const outputSection = document.querySelector(".outputSection");
 const formData = new Map();
 let errorArr = [];
 const prevImgUploads = new Map().set("adImgUpload", { name: "", type: "application/octet-stream", size: 0 }).set("logoUpload", { name: "", type: "application/octet-stream", size: 0 });
@@ -73,9 +76,11 @@ if (inputEls) {
   }
 }
 
+// preset select
 form?.querySelector("#preset").addEventListener("change", (ev) => {
   applyPreset(ev.currentTarget.value);
 });
+
 // advanced tab
 document?.querySelector(".advancedBtn").addEventListener("click", (ev) => {
   document?.querySelector(".advancedCont").classList.toggle("open");
@@ -152,16 +157,30 @@ function formSubmit(event) {
   if (filesDiffer(prevImgUploads.get("adImgUpload"), formData.get("adImgUpload"))) {
     console.log("adImgUpload has changed");
     if (formData.get("adImgUpload")?.size > 0) {
-      loadingStates.set("adImgUpload", true);
-      imgWorker.postMessage({
-        name: "adImgUpload",
-        imageData: formData.get("adImgUpload"),
-        sizes: {
-          bb: { width: 325, height: 250 },
-          mr: { width: 600, height: 500 },
-          hpa: { width: 600, height: 600 },
-        },
-      });
+      if (cropperEl) {
+        const imgObjUrl = URL.createObjectURL(formData.get("adImgUpload"));
+        cropperEl.src = imgObjUrl;
+        if (!cropper) {
+          cropper = new Cropper(cropperEl, { viewMode: 2, zoomOnWheel: false, autoCropArea: 1 });
+          cropperEl.addEventListener("cropend", (ev) => {
+            outputSection.classList.add("loading");
+            downloadBtn.setAttribute("disabled", "");
+            cropper.getCroppedCanvas({ fillColor: "#fff", imageSmoothingQuality: "medium" }).toBlob(
+              (blob) => {
+                generateImgs(blob);
+              },
+              "image/jpeg",
+              0.8,
+            );
+          });
+        } else {
+          cropper.replace(cropperEl.src);
+        }
+        cropperEl.parentElement.style.display = "block";
+      } else {
+        console.error("no cropperjs img element found");
+      }
+      generateImgs(formData.get("adImgUpload"));
     }
     prevImgUploads.set("adImgUpload", structuredClone(formData.get("adImgUpload")));
   } else {
@@ -298,6 +317,19 @@ function filesDiffer(fileA, fileB) {
   }
   console.warn('filesDiffer(); was fed something that is not typeof "object". returning: true');
   return true;
+}
+
+function generateImgs(imgData) {
+  loadingStates.set("adImgUpload", true);
+  imgWorker.postMessage({
+    name: "adImgUpload",
+    imageData: imgData,
+    sizes: {
+      bb: { width: 325, height: 250 },
+      mr: { width: 600, height: 500 },
+      hpa: { width: 600, height: 600 },
+    },
+  });
 }
 
 // update preview iframes
