@@ -1,7 +1,8 @@
-@layer reset, toggle, main, reducedmotion;
+@layer reset, toggle, main, cropper, reducedmotion;
 
 @import url("noicss.reset") layer(reset);
 @import url("noicss.toggle") layer(toggle);
+@import url("cropperjs") layer(cropper);
 @import url("noicss.reducedmotion") layer(reducedmotion);
 
 @layer main {
@@ -198,8 +199,10 @@
     position: relative;
   }
 
-  label:has(+ :where(input[type="text"], textarea)) {
+  label:has(+ :where(input[type="text"], textarea)),
+  .label {
     padding: 0 0.5em;
+    width: fit-content;
     position: relative;
     color: var(--hoverColor);
     border-radius: var(--borderRadius) var(--borderRadius) 0 0;
@@ -304,6 +307,16 @@
     align-items: center;
     justify-content: center;
     position: relative;
+  }
+
+  .cropperCont {
+    padding-top: var(--formGap);
+    width: 80%;
+    display: none;
+
+    & img {
+      max-width: 100%;
+    }
   }
 
   .toggleCont {
