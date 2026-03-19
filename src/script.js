@@ -1,10 +1,10 @@
-import presets from "./modules/presets.js";
+import { downloadZip } from "client-zip";
 import Cropper from "cropperjs";
 import FontPicker from "font-picker";
 import Billboard from "./modules/Billboard.js";
-import MediumRectangle from "./modules/MediumRectangle.js";
 import HalfPageAd from "./modules/HalfPageAd.js";
-import { downloadZip } from "client-zip";
+import MediumRectangle from "./modules/MediumRectangle.js";
+import presets from "./modules/presets.js";
 
 //---------
 // GLOBALS
