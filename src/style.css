@@ -2,18 +2,9 @@
 
 @import url("noicss.reset") layer(reset);
 @import url("noicss.toggle") layer(toggle);
-@import url("cropperjs") layer(cropper);
 @import url("noicss.reducedmotion") layer(reducedmotion);
 
 @layer main {
-  @keyframes rotate {
-    from {
-      rotate: 0deg;
-    }
-    to {
-      rotate: 360deg;
-    }
-  }
   :root {
     --accentColor: #0358a9;
     --textColor: #191919;
@@ -648,6 +639,15 @@
 
     &.loading .loader {
       visibility: visible;
+    }
+  }
+
+  @keyframes rotate {
+    from {
+      rotate: 0deg;
+    }
+    to {
+      rotate: 360deg;
     }
   }
 }
