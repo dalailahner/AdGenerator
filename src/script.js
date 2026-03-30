@@ -8,6 +8,7 @@ import presets from "./modules/presets.js";
 
 //---------
 // GLOBALS
+
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
 let presetIsFilling = false;
@@ -82,7 +83,7 @@ form?.querySelector("#preset").addEventListener("change", (ev) => {
 });
 
 // advanced tab
-document?.querySelector(".advancedBtn").addEventListener("click", (ev) => {
+document?.querySelector(".advancedBtn").addEventListener("click", () => {
   document?.querySelector(".advancedCont").classList.toggle("open");
 });
 
@@ -162,7 +163,7 @@ function formSubmit(event) {
         cropperEl.src = imgObjUrl;
         if (!cropper) {
           cropper = new Cropper(cropperEl, { viewMode: 2, zoomOnWheel: false, autoCropArea: 1 });
-          cropperEl.addEventListener("cropend", (ev) => {
+          cropperEl.addEventListener("cropend", () => {
             outputSection.classList.add("loading");
             downloadBtn.setAttribute("disabled", "");
             cropper.getCroppedCanvas({ fillColor: "#fff", imageSmoothingQuality: "medium" }).toBlob(
@@ -218,7 +219,7 @@ function formSubmit(event) {
             cleanedSVG = `data:image/svg+xml;utf8,${cleanedSVG}`;
             formData.set("logo", cleanedSVG);
           };
-          reader.onloadend = (e) => {
+          reader.onloadend = () => {
             loadingStates.set("logoUpload", false);
             updatePreview();
             form?.querySelector("#logoUpload ~ .clearLogoInput").classList.add("show");
@@ -278,7 +279,7 @@ function formSubmit(event) {
       cleanedSVG = `url("data:image/svg+xml,${cleanedSVG}")`;
       formData.set("svgBackground", cleanedSVG);
     };
-    reader.onloadend = (e) => {
+    reader.onloadend = () => {
       loadingStates.set("svgBackgroundUpload", false);
       updatePreview();
       form?.querySelector("#svgBackgroundUpload ~ .clearSvgBackgroundInput").classList.add("show");
