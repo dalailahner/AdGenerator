@@ -14,6 +14,7 @@ const form = document.querySelector("form");
 let presetIsFilling = false;
 const cropperEl = document.querySelector(".cropperCont img");
 let cropper;
+const inputEls = form?.querySelectorAll(":is(input, textarea)");
 const downloadBtn = document.querySelector(".downloadBtn");
 const outputSection = document.querySelector(".outputSection");
 const formData = new Map();
@@ -69,10 +70,29 @@ imgWorker.addEventListener("message", (ev) => {
 // custom form submit
 form.addEventListener("submit", (ev) => formSubmit(ev));
 
-// input change
-const inputEls = form?.querySelectorAll(":is(input, textarea)");
+// input events
 if (inputEls) {
   for (const el of inputEls) {
+    // on input
+    if (el?.dataset.maxlength) {
+      const maxlength = Number.parseInt(el.dataset.maxlength, 10);
+      if (Number.isInteger(maxlength)) {
+        el.addEventListener("input", () => {
+          const graphemes = new Intl.Segmenter("de", { granularity: "grapheme" }).segment(el.value);
+          const graphemesArr = Array.from(graphemes);
+          if (graphemesArr.length > maxlength) {
+            el.value = graphemesArr
+              .slice(0, maxlength)
+              .map((entry) => entry.segment)
+              .join("");
+          }
+        });
+      } else {
+        console.warn("DANGER! data-maxlength can't be parsed as an integer at element: ", el);
+      }
+    }
+
+    // on change
     el.addEventListener("change", (ev) => formSubmit(ev));
   }
 }
