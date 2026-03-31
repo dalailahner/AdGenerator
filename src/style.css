@@ -1,4 +1,4 @@
-@layer reset, toggle, main, cropper, reducedmotion;
+@layer reset, toggle, main, reducedmotion;
 
 @import url("noicss.reset") layer(reset);
 @import url("noicss.toggle") layer(toggle);
@@ -303,7 +303,12 @@
   .cropperCont {
     padding-top: var(--formGap);
     width: 80%;
+    container-type: inline-size;
     display: none;
+
+    & * {
+      outline-offset: 0; /* <- for cropper elements */
+    }
 
     & img {
       max-width: 100%;
