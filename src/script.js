@@ -12,7 +12,7 @@ import presets from "./modules/presets.js";
 const GOOGLE_FONT_API_KEY = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 const form = document.querySelector("form");
 let presetIsFilling = false;
-const cropperEl = document.querySelector(".cropperCont img");
+const cropperInitImg = document.querySelector(".cropperCont img");
 let cropper;
 const inputEls = form?.querySelectorAll(":is(input, textarea)");
 const downloadBtn = document.querySelector(".downloadBtn");
@@ -178,15 +178,47 @@ function formSubmit(event) {
   if (filesDiffer(prevImgUploads.get("adImgUpload"), formData.get("adImgUpload"))) {
     console.log("adImgUpload has changed");
     if (formData.get("adImgUpload")?.size > 0) {
-      if (cropperEl) {
+      if (cropperInitImg) {
         const imgObjUrl = URL.createObjectURL(formData.get("adImgUpload"));
-        cropperEl.src = imgObjUrl;
+        cropperInitImg.src = imgObjUrl;
         if (!cropper) {
-          cropper = new Cropper(cropperEl, { viewMode: 2, zoomOnWheel: false, autoCropArea: 1 });
-          cropperEl.addEventListener("cropend", () => {
+          cropper = new Cropper(cropperInitImg, {
+            container: cropperInitImg.parentElement,
+            template: `
+<cropper-canvas background theme-color="#0358a9" style="height: 100cqw; max-height: 90svh;">
+  <cropper-image scalable translatable></cropper-image>
+  <cropper-shade></cropper-shade>
+  <cropper-handle action="select" plain></cropper-handle>
+  <cropper-selection movable resizable zoomable outlined dynamic>
+    <cropper-grid bordered covered theme-color="rgba(3,88,169, 0.35)"></cropper-grid>
+    <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0)"></cropper-handle>
+    <cropper-handle action="n-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="e-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="s-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="w-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="ne-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="nw-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="se-resize" theme-color="#0358a9"></cropper-handle>
+    <cropper-handle action="sw-resize" theme-color="#0358a9"></cropper-handle>
+  </cropper-selection>
+</cropper-canvas>`,
+          });
+          cropper.container.style.display = "block";
+
+          cropper.getCropperImage().$ready(() => {
+            setupImageAndAlignSelection(cropper);
+          });
+
+          cropper.getCropperCanvas().addEventListener("actionend", async () => {
             outputSection.classList.add("loading");
             downloadBtn.setAttribute("disabled", "");
-            cropper.getCroppedCanvas({ fillColor: "#fff", imageSmoothingQuality: "medium" }).toBlob(
+            const cropperSelectionCanvas = await cropper.getCropperSelection().$toCanvas({
+              beforeDraw: (context, canvas) => {
+                context.fillStyle = "#ffffff";
+                context.fillRect(0, 0, canvas.width, canvas.height);
+              },
+            });
+            cropperSelectionCanvas.toBlob(
               (blob) => {
                 generateImgs(blob);
               },
@@ -195,11 +227,13 @@ function formSubmit(event) {
             );
           });
         } else {
-          cropper.replace(cropperEl.src);
+          cropper.getCropperImage().src = cropperInitImg.src;
+          cropper.getCropperImage().$ready(() => {
+            setupImageAndAlignSelection(cropper);
+          });
         }
-        cropperEl.parentElement.style.display = "block";
       } else {
-        console.error("no cropperjs img element found");
+        console.error("no cropperInitImg found");
       }
       generateImgs(formData.get("adImgUpload"));
     }
@@ -338,6 +372,13 @@ function filesDiffer(fileA, fileB) {
   }
   console.warn('filesDiffer(); was fed something that is not typeof "object". returning: true');
   return true;
+}
+
+function setupImageAndAlignSelection(cropperInstance) {
+  cropperInstance.getCropperImage().$scale(0.95);
+  const imageRect = cropperInstance.getCropperImage().getBoundingClientRect();
+  const canvasRect = cropperInstance.getCropperCanvas().getBoundingClientRect();
+  cropperInstance.getCropperSelection().$change(imageRect.x - canvasRect.x, imageRect.y - canvasRect.y, imageRect.width, imageRect.height);
 }
 
 function generateImgs(imgData) {
